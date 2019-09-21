@@ -1,15 +1,17 @@
 # Simple Farm - Design and Implementation
 
+### Farm Configuration
+
+Folder conf contains configuration files.  Default configration file name is
+farm.cfg.  This file is read by both farm server and client.
+
 ## Server
 
-We are starting with a 'Hello World' server implemented in pythoon3 using (bare) Flask.
+We are starting with a 'Hello World' server implemented in pythoon3 using
+(bare) Flask.
 
 To learn more about building flask applications check out:
 https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
-
-### Server Configuration
-
-Folder conf contains configuration files.  Default configration file name is farm.cfg.
 
 ### Starting the Server
 
@@ -69,8 +71,8 @@ Important things to note:
 
 * the server console produces output when you access the above URL in the
 browser.
-* output displayed in the browser is in JSON, not HTML - preferred format when
-the results are to be consumed by computer and not humans.
+* the server response to the client (e.g. browser) is in JSON, not HTML.  
+JSON is preferred when the results are to be consumed by computer and not human.
 * JSON is produced for both valid URLs, e.g. http://127.0.0.1:44444/index and
 URLs pointing to non-existing documents: http://127.0.0.1:44444/no/such/thing
 
@@ -80,18 +82,28 @@ We will cover production server deployment later.
 
 Just press Ctrl+C
 
-### Running the Client
+## Client
 
-Offcourse you can just use your browser. Point it to the interface and port
+Off course you can just use your browser. Point it to the interface and port
 specified in the configuration file - defaults to http://127.0.0.1:44444
 
-Alternatively, you can:
-```
-
-```
-
-Python REST client is implemented in the following modules:
+Alternatively you can use python farm client implemented in:
 
 * launcher farm and
 * restc.py
+
+
+### Using Farm Client
+
+The same farm launcher is used to run a client:
+
+```
+alex@latitude:~/Projects/RESTing-with-Flask/01$ ./farm/farm -v get index
+Loading config from farm.cfg ...
+HTTP GET http://127.0.0.1:44444/index ...
+HTTP GET http://127.0.0.1:44444/index => 200 , {'message': 'Hello, World!'}
+got back: {
+    "message": "Hello, World!"
+}
+```
 
