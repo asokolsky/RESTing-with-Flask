@@ -18,11 +18,6 @@ https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 Start with this: 
 
 ```
-alex@latitude:~/Projects/RESTing-with-Flask/01$ 
-alex@latitude:~/Projects/RESTing-with-Flask/01$ cd farm
-alex@latitude:~/Projects/RESTing-with-Flask/01/farm$ ./
-app/  conf/ farm  
-alex@latitude:~/Projects/RESTing-with-Flask/01/farm$ ./farm -h
 alex@latitude:~/Projects/RESTing-with-Flask/01/farm$ ./farm -h
 usage: farm [-h] [-c CONFIG] [-v] {start,get} ...
 
@@ -106,4 +101,3 @@ got back: {
     "message": "Hello, World!"
 }
 ```
-
