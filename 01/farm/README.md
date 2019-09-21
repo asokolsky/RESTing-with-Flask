@@ -66,8 +66,8 @@ Important things to note:
 
 * the server console produces output when you access the above URL in the
 browser.
-* the server response to the client (e.g. browser) is in JSON, not HTML.  
-JSON is preferred when the results are to be consumed by computer and not human.
+* the server response to the client (e.g. browser) is in JSON, not HTML.  JSON
+is preferred when the results are to be consumed by computer and not human.
 * JSON is produced for both valid URLs, e.g. http://127.0.0.1:44444/index and
 URLs pointing to non-existing documents: http://127.0.0.1:44444/no/such/thing
 
