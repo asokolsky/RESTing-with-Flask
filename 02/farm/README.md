@@ -1,6 +1,6 @@
-# Simple Farm - Design and Implementation
+# REST Server
 
-### Farm Configuration
+## Farm Configuration
 
 Folder conf contains configuration files.  Default configration file name is
 farm.cfg.  This file is read by both farm server and client.

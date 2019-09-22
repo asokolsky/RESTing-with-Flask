@@ -1,6 +1,6 @@
 # Farm REST API
 
-## Collections and APIs
+## Collections
 
 We start with Farm APIs operating on the following collections of objects:
 
@@ -9,7 +9,11 @@ We start with Farm APIs operating on the following collections of objects:
 Animal has:
 
 * unique identity (id), 
-* some attributes, e.g. species, sex, dob, weight.
+and then some attributes, e.g.:
+* name
+* sex
+* dob
+* weight
 
 ### Collection Naming: Singular or Plural?
 
@@ -22,32 +26,30 @@ more readable than
 
  /api/v1/animals/fluffy
 
-### Animal APIs
+## Animal Collection APIs
 
 All APIs URIs start with '/api/v1' to support versioning.
 
-#### /api/v1/animal, GET
+### /api/v1/animal, GET
 
 Retrieve the list of all the animals.
 
-#### /api/v1/animal, POST
+### /api/v1/animal, POST
 
 Create a new animal record.
 
-#### /api/v1/animal/<id>, GET
+### /api/v1/animal/<id>, GET
 
 Retrieve an animal by id.
 
-#### /api/v1/animal/<id>, DELETE
+### /api/v1/animal/<id>, DELETE
 
 Remove the record of a particular animal.
 
-#### /api/v1/animal/<id>, PUT
+### /api/v1/animal/<id>, PUT
 
 Modify a particular animal record.
 
-#### /api/v1/animal/<id>, PATCH
+### /api/v1/animal/<id>, PATCH
 
 Modify the particular animal record.
-
-
