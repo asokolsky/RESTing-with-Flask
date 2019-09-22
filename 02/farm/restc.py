@@ -23,7 +23,7 @@ class rest_client:
 
     def get(self, uri):
         '''
-        Issue HTTP GET to base_url + uri
+        Issue HTTP GET to a base_url + uri
         returns (http_status, response_json)
         Throws requests.exceptions.ConnectionError when coonnection fails
         '''
@@ -32,5 +32,20 @@ class rest_client:
             print('HTTP GET', url, '...')
         resp = self.ses.get(url)
         if self.verbose:
-            print('HTTP GET', url, '=>', resp.status_code, ',', str(resp.json()))
+            print('HTTP GET =>', resp.status_code, ',', str(resp.json()))
         return (resp.status_code, resp.json())
+
+    def post(self, uri, pdata):
+        '''
+        Issue HTTP POST to a base_url + uri
+        returns (http_status, response_json)
+        Throws requests.exceptions.ConnectionError when coonnection fails
+        '''
+        url = urljoin(self.base_url, uri)
+        if self.verbose:
+            print('HTTP POST', url, str(pdata))
+        resp = self.ses.post(url, data=pdata)
+        if self.verbose:
+            print('HTTP POST =>', resp.status_code, ',', str(resp.json()))
+        return (resp.status_code, resp.json())
+

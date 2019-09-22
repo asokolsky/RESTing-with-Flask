@@ -6,9 +6,13 @@
 #   ./farm -h
 #   ./farm start -h
 #   ./farm get -h
+#   ./farm post -h
 #
 import sys
 from argparse import ArgumentParser
+from json import dumps, loads, JSONDecodeError
+from uuid import uuid4 
+from restc import rest_client
 
 def farm_stub( options ):
     '''
@@ -34,24 +38,54 @@ def farm_start( options ):
         print('Failed to start farm: ', str(e))
     return
 
+def build_client(options):
+    '''
+    Load config file and build an instance of rest_client
+    Returns a rest_client
+    '''
+    from app import app, create_app
+
+    app = create_app(options.config)
+    iface = app.config.get('FARM_IF')
+    port = app.config.get('FARM_PORT')
+    return rest_client(iface, port, options.verbose)
+
 def farm_get( options ):
     '''
     Farm REST API client.
     Performs HTTP GET
     '''
-    from app import app, create_app
-    from json import dumps
-    from restc import rest_client
 
-    app = create_app(options.config)
-    iface = app.config.get('FARM_IF')
-    port = app.config.get('FARM_PORT')
-    cl = rest_client(iface, port, options.verbose)
+    cl = build_client(options)
     try:
         for uri in options.uri:
             (status_code, rdata) = cl.get(uri)
             #print('HTTP status code:', status_code)
             print('got back:', dumps(rdata, indent=4))
+
+    except Exception as ex:
+        print('Connection failed: ', str(ex))
+
+    return
+
+def farm_post( options ):
+    '''
+    Farm REST API client.
+    Performs HTTP POST
+    '''
+
+    cl = build_client(options)
+    try:
+        da = loads(options.data)
+        #id = da.get('id', None)
+        #if id is None:
+        da['id'] = str(uuid4())
+        (status_code, rdata) = cl.post(options.uri, da)
+        #print('HTTP status code:', status_code)
+        print('got back:', dumps(rdata, indent=4))
+
+    except JSONDecodeError:
+        print('Data to post should be JSON.  id will be added.')
 
     except Exception as ex:
         print('Connection failed: ', str(ex))
@@ -95,6 +129,14 @@ scp_get = scp.add_parser(
     help = 'Issue GET request to the farm server. ' )
 scp_get.add_argument('uri', nargs='+')
 scp_get.set_defaults( func = farm_get )
+
+scp_post = scp.add_parser(
+    'post',
+    description = 'Issue HTTP POST to the farm server.',
+    help = 'Issue POST request to the farm server. ' )
+scp_post.add_argument('uri')
+scp_post.add_argument('data')
+scp_post.set_defaults( func = farm_post )
 
 # finally, parse the command line
 pargs = ap.parse_args()

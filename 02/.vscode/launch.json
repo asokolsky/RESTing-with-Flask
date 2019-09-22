@@ -5,11 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: farm post",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/farm/farm",
+            "args":["-v", "post", "/api/v1/animal", "{'id':'dsdsdasdawdasawadwwadasdaawwere'}"],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: farm get",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/farm/farm",
-            "args":["get", "jjhjhj"],
+            "args":["-v", "get", "/api/v1/animal"],
             "console": "integratedTerminal"
         },
         {
