@@ -92,10 +92,65 @@ def farm_post( options ):
 
     return
 
+def farm_animal( options ):
+    '''
+    Called when user executes ./farm animal
+    '''
+    def animal_new(cl, data, n):
+        '''
+        Try to create a new animal.
+        In: data should be a meaningful JSON
+        '''
+        for i in range(0, n):
+            da = loads(data)
+            id = da.get('id', None)
+            if id is None:
+                da['id'] = str(uuid4())
+            (status_code, rdata) = cl.post('/api/v1/animal', da)
+            #print('HTTP status code:', status_code)
+            print('got back:', dumps(rdata, indent=4))
+        return
+
+    def animal_get(cl, data):
+        '''
+        Retrieve an animal record.
+        In: data should be ID
+        '''
+        (status_code, rdata) = cl.get('/api/v1/animal/' + data)
+        print('got back:', dumps(rdata, indent=4))
+        return
+
+    def animal_del(cl, data):
+        '''
+        Delete an animal record.
+        In: data should be ID
+        '''
+        (status_code, rdata) = cl.delete('/api/v1/animal/' + data)
+        print('got back:', dumps(rdata, indent=4))
+        return
+
+    cl = build_client(options)
+    try:
+        for da in options.data:
+            if options.action == 'new':
+                animal_new(cl, da, options.num)
+            elif options.action == 'get':
+                animal_get(cl, da)
+            elif options.action == 'del':
+                animal_del(cl, da)
+
+    except JSONDecodeError:
+        print('Data to post should be JSON.  id will be added.')
+
+    except Exception as ex:
+        print('Connection failed: ', str(ex))
+
+    return
+
 #
 # argument parser
 #
-ap = ArgumentParser( 
+ap = ArgumentParser(
     'farm',
     description= 'Farm REST API server.')
 ap.add_argument(
@@ -126,19 +181,40 @@ scp_start.set_defaults( func = farm_start )
 scp_get = scp.add_parser(
     'get',
     description = 'Issue HTTP GET to the farm server.',
-    help = 'Issue GET request to the farm server. ' )
+    help = 'Issue GET request to the farm server.' )
 scp_get.add_argument('uri', nargs='+')
 scp_get.set_defaults( func = farm_get )
 
 scp_post = scp.add_parser(
     'post',
     description = 'Issue HTTP POST to the farm server.',
-    help = 'Issue POST request to the farm server. ' )
+    help = 'Issue POST request to the farm server.' )
 scp_post.add_argument('uri')
 scp_post.add_argument('data')
 scp_post.set_defaults( func = farm_post )
 
-# finally, parse the command line
+scp_animal = scp.add_parser(
+    'animal',
+    description = 'Issue animal commands.',
+    help = 'Issue animal commands to the farm server.' )
+scp_animal.add_argument(
+    'action',
+    choices=['new', 'get', 'del'],
+    help = 'Animal command, determines how data argument is interpreted.')
+scp_animal.add_argument(
+    '-n',
+    '--num',
+    type=int,
+    default=1,
+    help = 'Repeat command this many times. ' + \
+        'Defaults to the number of times the data is specified.')
+scp_animal.add_argument(
+    'data',
+    nargs='+',
+    help = 'Animal data. Must be JSON for new (ID will be added) or animal ID for the other commands.')
+scp_animal.set_defaults( func = farm_animal )
+
+# finally, parse the command linex
 pargs = ap.parse_args()
 try:
     pargs.func( pargs )

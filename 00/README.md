@@ -5,7 +5,7 @@ For development you will need:
 * git, 
 * python,
 * extra python packages (e.g. flask, argparse, etc),
-* development environment (e.g. emacs or code),
+* development environment (e.g. emacs or code or PyCharm).
 
 For testing you will also need:
 
