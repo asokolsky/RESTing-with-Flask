@@ -13,8 +13,9 @@ Review [some examples](https://openclassrooms.com/en/courses/3432056-build-your-
 * [Instagram API](https://www.instagram.com/developer/endpoints/users/)
 * [Gmail API](https://openclassrooms.com/en/courses/3432056-build-your-web-projects-with-rest-apis/3496011-identify-examples-of-rest-apis)
 
-Then read Farm.API.v01.md for a proposal.  I am not a farming domain expert. But
-for my purposes at this stage such an API should do the job of demonstrating the
-craft of building a REST server.
+Then read [Farm.API.v01.md](Farm.API.v01.md) for a proposal.
+I am not a farming domain expert.
+But for my purposes at this stage such an API will do the job of
+demonstrating the craft of building a REST server.
 
 Then, proceed to the farm, folder.
