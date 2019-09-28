@@ -18,4 +18,4 @@ I am not a farming domain expert.
 But for my purposes at this stage such an API will do the job of
 demonstrating the craft of building a REST server.
 
-Then, proceed to the farm, folder.
+Then, proceed to the [farm folder](farm/).
