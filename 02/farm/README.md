@@ -2,10 +2,12 @@
 
 ## Server
 
-Farm API v1 is implemented:
-* app/dataset.py implements in-memory data storage for animals
-* app/routes.py implements animal collection APIs
+Farm API v1 is implemented in the following files:
+* app/dataset.py implements in-memory data storage for animals;
+* app/routes.py implements REST APIs for animal collection;
 * except that methods PUT and PATCH are not implemented yet.
+
+As before, farm server is launched using farm start command.
 
 Also a bit of logging added for extra verbosity.
 Here is a decent [primer](https://www.scalyr.com/blog/getting-started-quickly-with-flask-logging/).
@@ -18,7 +20,7 @@ constitute a low level farm actions.
 Moreover, farm python client adds high level action support for animal:
 farm animal new|get|del|mod
 
-## Tests
+## Playing with the Farm
 
 Test low level APIs:
 
@@ -77,4 +79,18 @@ Logging level set to 10 DEBUG
 20190926.191011.588 [10] [140403174364992] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/b0c1201a-4d14-4384-beec-a380f64f83e7 HTTP/1.1" 200 3
 got back: {}
 
+```
+
+## Testing Farm
+
+Launch automated farm test:
+
+```
+python3 -m unittest test_farm -v
+```
+
+Launch automated test of restc.py:
+
+```
+python3 -m unittest test_restc -v
 ```

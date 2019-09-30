@@ -56,7 +56,7 @@ def api_animals():
         'id' : id,
         '_href' : url_for('api_animal', id=id),
     }
-    return jsonify(elt)
+    return jsonify(elt), 201
 
 @app.route('/api/v1/animal/<id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])
 def api_animal(id):
