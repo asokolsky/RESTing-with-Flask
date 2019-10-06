@@ -21,6 +21,13 @@ class rest_client:
         self.ses = Session()
         return
 
+    def close(self):
+        '''
+        Close the underlying TCP connection
+        '''
+        self.ses.close()
+        return        
+
     def get(self, uri):
         '''
         Issue HTTP GET to a base_url + uri
@@ -61,4 +68,32 @@ class rest_client:
         resp = self.ses.delete(url)
         if self.verbose:
             print('HTTP DELETE =>', resp.status_code, ',', str(resp.json()))
+        return (resp.status_code, resp.json())
+
+    def put(self, uri, pdata):
+        '''
+        Issue HTTP PUT to a base_url + uri
+        returns (http_status, response_json)
+        Throws requests.exceptions.ConnectionError when connection fails
+        '''
+        url = urljoin(self.base_url, uri)
+        if self.verbose:
+            print('HTTP PUT', url, str(pdata))
+        resp = self.ses.put(url, json=pdata)
+        if self.verbose:
+            print('HTTP PUT =>', resp.status_code, ',', str(resp.json()))
+        return (resp.status_code, resp.json())
+
+    def patch(self, uri, pdata):
+        '''
+        Issue HTTP PATCH to a base_url + uri
+        returns (http_status, response_json)
+        Throws requests.exceptions.ConnectionError when connection fails
+        '''
+        url = urljoin(self.base_url, uri)
+        if self.verbose:
+            print('HTTP PATCH', url, str(pdata))
+        resp = self.ses.patch(url, json=pdata)
+        if self.verbose:
+            print('HTTP PATCH =>', resp.status_code, ',', str(resp.json()))
         return (resp.status_code, resp.json())

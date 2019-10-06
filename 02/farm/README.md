@@ -83,14 +83,25 @@ got back: {}
 
 ## Testing Farm
 
-Launch automated farm test:
+test_restc.py relies on an external web site http://httpbin.org, so your
+internet connection should be up for this to work.
+
+test_farm.py relies on a builtin flask test client, so the farm application
+does not even have to run for the test to work!
+
+To launch all the tests:
 
 ```
-python3 -m unittest test_farm -v
+alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 -m unittest
 ```
 
-Launch automated test of restc.py:
+The above will looks for all the files named test_xyz.py and will run unit test on it.
+
+Alternatively you can test one module at a time:
 
 ```
-python3 -m unittest test_restc -v
+alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_restc.py
+alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_restc.py
 ```
+
+
