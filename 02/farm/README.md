@@ -3,22 +3,32 @@
 ## Server
 
 Farm API v1 is implemented in the following files:
+
 * app/dataset.py implements in-memory data storage for animals;
 * app/routes.py implements REST APIs for animal collection;
-* except that methods PUT and PATCH are not implemented yet.
+* except that methods PUT and PATCH are not implemented yet;
+* as before, folder conf contains Farm configuration.  It is consulted by both
+the server and the client.
 
 As before, farm server is launched using farm start command.
 
-Also a bit of logging added for extra verbosity.
-Here is a decent [primer](https://www.scalyr.com/blog/getting-started-quickly-with-flask-logging/).
+We added  some logging for extra verbosity.
+Here is a decent [primer on flask logging](https://www.scalyr.com/blog/getting-started-quickly-with-flask-logging/).
 
 ## Client
 
-Farm python client now supports HTTP POST.  Along with previously implemented GET those two
-constitute a low level farm actions.
+Module [restc.py](restc.py) has python implementation of HTTP client.  It relies on session
+(as opposed to request object) in order to maintain context between the calls. 
+This is important not only for performance reasons (no need to re-establish TCP
+connection) but later will make possible client login.
 
-Moreover, farm python client adds high level action support for animal:
+Farm python client now supports HTTP POST.  Along with the previously
+implemented GET those two constitute a low level farm actions.  Moreover, farm
+python client now adds high level actions for animal collection:
+
+```
 farm animal new|get|del|mod
+```
 
 ## Playing with the Farm
 
@@ -83,8 +93,9 @@ got back: {}
 
 ## Testing Farm
 
-test_restc.py relies on an external web site http://httpbin.org, so your
-internet connection should be up for this to work.
+HTTP client implementation is tested in test_restc.py against an external web
+site http://httpbin.org, so your internet connection should be up for this to
+work.
 
 test_farm.py relies on a builtin flask test client, so the farm application
 does not even have to run for the test to work!
@@ -95,13 +106,12 @@ To launch all the tests:
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 -m unittest
 ```
 
-The above will looks for all the files named test_xyz.py and will run unit test on it.
+The above will look for all the python files starting with test_ and will run
+unit test on those.
 
 Alternatively you can test one module at a time:
 
 ```
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_restc.py
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_restc.py
+alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_farm.py
 ```
-
-
