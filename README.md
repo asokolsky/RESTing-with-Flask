@@ -7,7 +7,7 @@ These are the sources.  See also
 
 This is a work in progress.
 Developed and tested on Linux.
-But shoud run pretty much anyywhere, although if you do not have bash,
+But should run pretty much anywhere, although if you do not have bash,
 you will have to jump through more hoops.
 
 ## How to use it
