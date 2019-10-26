@@ -110,6 +110,8 @@ def farm_animal( options ):
             (status_code, rdata) = cl.post('/api/v1/animal', da)
             #print('HTTP status code:', status_code)
             print('got back:', dumps(rdata, indent=4))
+            if status_code != 201:
+                break
         return
 
     def animal_get(cl, data):
@@ -117,17 +119,36 @@ def farm_animal( options ):
         Retrieve an animal record.
         In: data should be ID
         '''
-        (status_code, rdata) = cl.get('/api/v1/animal/' + data)
+        if data == 'all':
+            uri = '/api/v1/animal'
+        else:
+            uri = '/api/v1/animal/' + data
+        (status_code, rdata) = cl.get(uri)
         print('got back:', dumps(rdata, indent=4))
-        return
+        return rdata
 
     def animal_del(cl, data):
         '''
         Delete an animal record.
         In: data should be ID
         '''
+        if data == 'all':
+            animal_del_all(cl)
+            return
+
         (status_code, rdata) = cl.delete('/api/v1/animal/' + data)
         print('got back:', dumps(rdata, indent=4))
+        return
+
+    def animal_del_all(cl):
+        '''
+        Delete all the known animals!
+        '''
+        adata = animal_get(cl, 'all')
+        for a in adata:
+            print(a)
+            id = a.get('id')
+            animal_del(cl, id)
         return
 
     cl = build_client(options)
@@ -207,7 +228,7 @@ scp_animal.add_argument(
 scp_animal.add_argument(
     'data',
     nargs='+',
-    help = 'Animal data. Must be JSON for new (ID will be added) or animal ID for the other commands.')
+    help = 'Animal data. Must be JSON for new (ID will be added) or animal ID for other commands or "all".')
 scp_animal.set_defaults( func = farm_animal )
 
 # finally, parse the command linex

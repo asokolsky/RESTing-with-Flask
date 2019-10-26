@@ -9,7 +9,10 @@ from schema import (
     Use,
 )
 
-
+#
+# Let's first improve on the schema module:
+# Need a better support for Enum!
+#
 class SchemaEnumError(SchemaError):
     '''
     Is thrown when validation of an enum schema fails.
@@ -45,7 +48,7 @@ AnimalSchema = Schema({
     'species' : Enum('Chicken', 'Cow'),
     'sex': Enum('Female', 'Male'),
     Optional("name"): And(Use(str), len),
-    Optional("dob"): Regex(r'[0-9]{4}\-[0-9]{4}\-[0-9]{2}'),
+    Optional("dob"): Regex(r'[0-9]{4}\-[0-1][0-9]\-[0-3][0-9]'), # YYYY-MM-DD
     # weight in grams? Or rather have it in a time-series db?
     #Optional("weight"): And(Use(int), lambda w: 0 < w <= 10000000),
 })
