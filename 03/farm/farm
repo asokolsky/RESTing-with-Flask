@@ -7,6 +7,7 @@
 #   ./farm start -h
 #   ./farm get -h
 #   ./farm post -h
+#   ./farm animal -h
 #
 import sys
 from argparse import ArgumentParser
@@ -178,25 +179,20 @@ scp_start = scp.add_parser(
 scp_start.set_defaults( func = farm_start )
 
 # get sub-command
-scp_get = scp.add_parser(
-    'get',
-    description = 'Issue HTTP GET to the farm server.',
-    help = 'Issue GET request to the farm server.' )
+help = 'Issue HTTP GET to the farm server, e.g. farm get /api/v1/animal'
+scp_get = scp.add_parser('get', description = help, help = help)
 scp_get.add_argument('uri', nargs='+')
 scp_get.set_defaults( func = farm_get )
 
-scp_post = scp.add_parser(
-    'post',
-    description = 'Issue HTTP POST to the farm server.',
-    help = 'Issue POST request to the farm server.' )
+help = '''Issue HTTP POST to the farm server, e.g.
+farm post /api/v1/animal {"name":"fluffy"}'''
+scp_post = scp.add_parser('post', description = help, help = help)
 scp_post.add_argument('uri')
 scp_post.add_argument('data')
 scp_post.set_defaults( func = farm_post )
 
-scp_animal = scp.add_parser(
-    'animal',
-    description = 'Issue animal commands.',
-    help = 'Issue animal commands to the farm server.' )
+help = 'Issue animal commands.'
+scp_animal = scp.add_parser('animal', description = help, help = help)
 scp_animal.add_argument(
     'action',
     choices=['new', 'get', 'del'],

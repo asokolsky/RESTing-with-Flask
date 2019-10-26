@@ -1,6 +1,14 @@
 import sys
 from flask import jsonify, request, url_for
 from json import dumps
+from schema import (
+    Schema,
+    SchemaError,
+    SchemaForbiddenKeyError,
+    SchemaMissingKeyError,
+    SchemaUnexpectedTypeError,
+    SchemaWrongKeyError,
+)
 
 from . import app, log
 from . import dataset
@@ -48,15 +56,22 @@ def api_animals():
     id = rd.get('id', None)
     if id is None:
         return error409('Request must be a JSON with id')
-    exist = dataset.theAnimals.get(id)
-    if exist is not None:
+    exists = dataset.theAnimals.get(id)
+    if exists is not None:
         return error409('Can not POST to an existing entity.')
-    dataset.theAnimals.put(id, rd)
-    elt = { 
-        'id' : id,
-        '_href' : url_for('api_animal', id=id),
-    }
-    return jsonify(elt), 201
+    try:
+        if dataset.theAnimals.put(id, rd):
+            elt = { 
+                'id' : id,
+                '_href' : url_for('api_animal', id=id),
+            }
+            return jsonify(elt), 201
+
+    except SchemaError as err:
+            return error409('Request data error: ' + str(err))
+
+    return error409('Request data validation failed')
+
 
 @app.route('/api/v1/animal/<id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])
 def api_animal(id):

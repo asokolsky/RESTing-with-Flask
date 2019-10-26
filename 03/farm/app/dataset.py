@@ -1,19 +1,18 @@
+from . farm_schema import AnimalSchema
 
 class DataSet:
     '''
     Class to represent in-memory collection of objects
     '''
-    def __init__(self, name):
+    def __init__(self, name, schema):
         '''
         In:
         name - dataset name - e.g. 'animal'
+        schema - dataset schema
         '''
         self.name = name
+        self.schema = schema
         self.data = dict()
-        return
-
-    def add(self, id, dat):
-        self.data[id] = dat
         return
 
     def get(self, id):
@@ -25,13 +24,20 @@ class DataSet:
     def put(self, id, dat):
         '''
         Stores data into the dataset
+        Returns:
+        True if dat is validated against schema and is added to the dataset
+        False otherwise
+        May throw:
+        SchemaMissingKeyError
         '''
+        if not self.schema.validate(dat):
+            return False
         self.data[id] = dat
-        return
+        return True
 
     def pop(self, id):
         return self.data.pop(id, None)
 
 
 # will be storing animals here
-theAnimals = DataSet('animal')
+theAnimals = DataSet('animal', AnimalSchema)

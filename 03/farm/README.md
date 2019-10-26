@@ -2,9 +2,12 @@
 
 ## Server
 
-In this section we added the following functionality:
+In this section we are adding the following functionality:
 
-* farm schema defined
+* farm schema defined using
+[schema](https://github.com/keleshev/schema) package.  Install it using
+`pip3 install schema`
+* dataset class now works with schema
 * APIs animal,POST enforce schema validation
 
 ## Client
@@ -15,7 +18,7 @@ TBD
 
 Test low level APIs:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ ./farm -v post /api/v1/animal '{"name":"fluff"}'
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -40,7 +43,7 @@ got back: {
 
 Now to high level farm client functions:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ ./farm animal get 754e424a-37be-4457-96a1-8f2e0a2ab58c
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -83,7 +86,7 @@ does not even have to run for the test to work!
 
 To launch all the tests:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 -m unittest
 ```
 
@@ -92,7 +95,7 @@ unit test on those.
 
 Alternatively you can test one module at a time:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_restc.py
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_farm.py
 ```

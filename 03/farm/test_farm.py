@@ -8,10 +8,14 @@
 #
 
 import unittest
+import random
 from uuid import uuid4 
 from json import loads
 
 from app import app, create_app, init_app
+
+def get_random(ar):
+    return ar[random.randint(0, len(ar)-1)]
 
 class TestFarm(unittest.TestCase):
 
@@ -20,6 +24,8 @@ class TestFarm(unittest.TestCase):
         Executed prior to each test.
         Launch Farm server - compare to farm::farm_start
         '''
+        random.seed()
+
         app = create_app('farm.cfg')
         init_app(app)
 
@@ -53,7 +59,9 @@ class TestFarm(unittest.TestCase):
         '''
         Wrapper around post
         '''
-        return self.app.post('/api/v1/' + uri, json=jdata)
+        res = self.app.post('/api/v1/' + uri, json=jdata)
+        print('res', res)
+        return res
 
     def delete(self, uri):
         '''
@@ -61,17 +69,29 @@ class TestFarm(unittest.TestCase):
         '''
         return self.app.delete('/api/v1/' + uri)
 
+    def new_animal(self):
+        '''
+        Generate a valid animal record
+        '''
+        # let's give it a name
+        n1 = ['little', 'big', 'tiny', 'baby', 'babe', 'ugly', 'pretty', 'skinny', 'lady',
+        'sixfinger', 'handsome', 'proud', 'steady', 'blond']
+        n2 = ['bella', 'coco', 'max', 'buddy', 'daisy', 'lola', 'luna', 'lucy', 'harley',
+        'charlie', 'pepper', 'shadow', 'gracie', 'jack', 'milo', 'rocky', 'sadie', 'stella']
+        name = get_random(n1) + ' ' + get_random(n2)
+        ad = {
+            'id' : str(uuid4()),
+            'species': get_random(['chicken', 'cow']),
+            'name' : name,
+            'sex': get_random(['female', 'male'])
+        }
+        return ad
+
     def post_an_animal(self):
         '''
         Post a single animal to the collection
         '''
-        uri = 'animal'
-        id = str(uuid4())
-        ad = {
-            'id' : id,
-            'weight' : 4500,
-        }
-        return self.post(uri, ad)
+        return self.post('animal', self.new_animal())
 
     def delete_an_animal(self, id):
         return self.delete('animal/' + id)
@@ -114,6 +134,24 @@ class TestFarm(unittest.TestCase):
         # verify there is one less animal
         ans = self.get_animals()
         self.assertEqual(len(ans), iAnimals - 1)
+
+        # verify that schema validation indeed works
+        ad = self.new_animal()
+        ad['species'] = 'alien'
+        resp = self.post('animal', ad)
+        self.assertEqual(resp.status_code, 409)
+
+        # verify that schema validation indeed works
+        ad = self.new_animal()
+        ad['dob'] = '2019-10-20'
+        resp = self.post('animal', ad)
+        self.assertEqual(resp.status_code, 201)
+
+        # verify that schema validation indeed works
+        ad = self.new_animal()
+        ad['dob'] = '2019-1-20'
+        resp = self.post('animal', ad)
+        self.assertEqual(resp.status_code, 409)
         return
 
 if __name__ == '__main__':
