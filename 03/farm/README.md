@@ -9,6 +9,7 @@ In this section we are adding the following functionality:
 `pip3 install schema`
 * dataset class now works with schema
 * APIs animal,POST enforce schema validation
+* more unit tests added in the app folder - see below on how to run those.
 
 We made minor improvements to the schema package:
 * better handling of enums
@@ -23,7 +24,7 @@ farm animal del all
 
 ## Playing with the Farm
 
-Test low level APIs:
+Let's start with the low level APIs that used to work for us in the past:
 
 ```bash
 alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm -v post /api/v1/animal '{"name":"fluff"}'
@@ -37,6 +38,12 @@ got back: {
     "http_status_code": 409,
     "text": "Request data error: Missing keys: 'sex', 'species'"
 }
+```
+
+We are getting data validation error along with explanation of what is
+expected.  Let's supply the requested data:
+
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm -v post /api/v1/animal '{"name":"fluff", "sex":"female", "species":"chicken"}'
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -76,6 +83,12 @@ got back: {
     "sex": "female",
     "species": "chicken"
 }
+```
+
+Check out data validation with higher level API:
+
+```bash
+
 alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal new '{"species":"chicken"}' -n 10
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -107,6 +120,12 @@ Logging level set to 10 DEBUG
 20191026.161909.946 [10] [140600444168000] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
 20191026.161909.948 [10] [140600444168000] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/4a070f6e-9fc6-493a-acc3-6f8b9a13fba4 HTTP/1.1" 200 3
 got back: {}
+```
+
+Now let's try wildcard argument we introduced in this section:
+
+```bash
+
 alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal del all
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -204,7 +223,7 @@ got back: []
 
 ## Testing Farm
 
-We added tests in app folder.  To launch all the tests:
+We added tests in the app folder.  To launch all the tests:
 
 ```bash
 alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest
