@@ -204,17 +204,15 @@ got back: []
 
 ## Testing Farm
 
-HTTP client implementation is tested in test_restc.py against an external web
-site http://httpbin.org, so your internet connection should be up for this to
-work.
-
-test_farm.py relies on a builtin flask test client, so the farm application
-does not even have to run for the test to work!
-
-To launch all the tests:
+We added tests in app folder.  To launch all the tests:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 -m unittest
+alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
 ```
 
 The above will look for all the python files starting with test_ and will run
@@ -223,6 +221,18 @@ unit test on those.
 Alternatively you can test one module at a time:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_restc.py
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_farm.py
+alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest test_dataset -v
+test_dataset (test_dataset.TestDataset) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK
+alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest test_farm_schema -v
+test_animal_schema (test_farm_schema.TestFarmSchema) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.001s
+
+OK
 ```
