@@ -25,10 +25,10 @@ class DataSet:
         '''
         Stores data into the dataset
         Returns:
-        True if dat is validated against schema and is added to the dataset
-        False otherwise
+            True if dat is validated against schema and is added to the dataset
+            False otherwise
         May throw:
-        SchemaMissingKeyError
+            SchemaError
         '''
         if not self.schema.validate(dat):
             return False
