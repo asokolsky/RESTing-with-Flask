@@ -8,7 +8,7 @@ In this section we are adding the following functionality:
 [schema](https://github.com/keleshev/schema) package.  Install it using
 `pip3 install schema`
 * dataset class now works with schema
-* APIs animal,POST enforce schema validation
+* APIs animal, POST enforce schema validation
 * more unit tests added in the app folder - see below on how to run those.
 
 We made minor improvements to the schema package:
