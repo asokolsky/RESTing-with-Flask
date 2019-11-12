@@ -48,7 +48,6 @@ def api_animals():
     # create a new animal from the POSTed data
     rd = request.get_json(force=True, silent=True) # , cache=False
     log.info('/api/v1/animal POST %s', str(rd))
-    #print('/api/v1/animal POST', str(rd), file=sys.stderr)
     if rd is None:
         return error409('Request must be a JSON')
 
@@ -89,8 +88,32 @@ def api_animal(id):
         res = {}
         return jsonify(res)
 
+    rd = request.get_json(force=True, silent=True) # , cache=False
+    log.info('/api/v1/animal/%s %s %s', id, request.method, str(rd))
+    if rd is None:
+        return error409('Request must be a JSON')
+
     if request.method == 'PUT':
-        return error400('Not implemented yet')
+        nid = rd.get('id', None)
+        if nid is None:
+            rd['id'] = id
+        elif(nid == rd['id']):
+            pass
+        else:
+            return error409('Conflict: URI id vs request id')
+
+        try:
+            if dataset.theAnimals.put(id, rd):
+                elt = { 
+                    'id' : id,
+                    '_href' : url_for('api_animal', id=id),
+                }
+                return jsonify(elt), 200
+
+        except SchemaError as err:
+                return error409('Request data error: ' + str(err))
+
+        return error409('Request data validation failed')
 
     assert request.method == 'PATCH'
     return error400('Not implemented yet')

@@ -28,14 +28,30 @@ def create_app( cfgfile ):
             app.config.from_pyfile(cfgfile)
 
     if log is None:
+        #
+        # what a mess: https://github.com/pallets/flask/issues/2998
+        # more in-depth: https://www.scalyr.com/blog/getting-started-quickly-with-flask-logging/
+        #
+        app.logger.info('Starting farm service...')
         mfmt = "%(asctime)s.%(msecs)03d [%(levelno)s] [%(thread)d] %(filename)s:%(lineno)s %(message)s"
         logging.basicConfig(format=mfmt, datefmt="%Y%m%d.%H%M%S")
-        log = getLogger()
+
+        # this logger will be created only when the first message is logged
+        wlog = logging.getLogger("werkzeug")
+        #wlog.disabled = True
+
+        #log = getLogger()
+        log = app.logger
+        print('Using:', str(log))
+
         level = app.config.get('LOGGING_LEVEL', 'INFO')
         iLevel = getattr(logging, str(level), INFO)
         if isinstance(iLevel, int):
             log.setLevel(iLevel)
             print('Logging level set to', iLevel, level)
+
+        loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
+        print('Loggers:', str(loggers))
 
     return app
 
