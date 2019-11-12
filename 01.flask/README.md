@@ -3,7 +3,7 @@
 In this section we will build a simple flask application with launcher and a client,
 See farm folder.  Here is the recommended way to start working on this:
 
-```
+```bash
 alex@latitude:~$ cd Projects/RESTing-with-Flask
 RESTing-with-Flask/      RESTing-with-Flask.wiki/ 
 alex@latitude:~$ cd Projects/RESTing-with-Flask

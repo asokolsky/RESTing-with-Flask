@@ -2,12 +2,12 @@
 
 ## Farm Configuration
 
-Folder conf contains configuration files.  Default configration file name is
+Folder conf contains configuration files.  Default configuration file name is
 farm.cfg.  This file is read by both farm server and client.
 
 ## Server
 
-We are starting with a 'Hello World' server implemented in pythoon3 using
+We are starting with a 'Hello World' server implemented in python3 using
 (bare) Flask.
 
 To learn more about building flask applications check out:
@@ -15,9 +15,9 @@ https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world
 
 ### Starting the Server
 
-Start with this: 
+Start with this:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/01/farm$ ./farm -h
 usage: farm [-h] [-c CONFIG] [-v] {start,get} ...
 
@@ -46,7 +46,7 @@ alex@latitude:~/Projects/RESTing-with-Flask/01/farm$
 
 To start the server just do this:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/01/farm$ ./farm start
 Loading config from farm.cfg ...
 Initializing...
@@ -87,12 +87,11 @@ Alternatively you can use python farm client implemented in:
 * launcher farm and
 * restc.py
 
-
 ### Using Farm Client
 
 The same farm launcher is used to run a client:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/01$ ./farm/farm -v get index
 Loading config from farm.cfg ...
 HTTP GET http://127.0.0.1:44444/index ...
