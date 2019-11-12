@@ -12,11 +12,13 @@ In this section we are adding the following functionality:
 * more unit tests added in the app folder - see below on how to run those.
 
 We made minor improvements to the schema package:
+
 * better handling of enums
 
 ## Client
 
 CLI farm client now understands 'all', so that you can do:
+
 ```bash
 farm animal get all
 farm animal del all
@@ -69,7 +71,6 @@ got back: [
 ```
 
 Now to high level farm client functions:
-
 
 ```bash
 alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal get c63226fb-1ae1-4d65-8c5c-c991dea4ae91
