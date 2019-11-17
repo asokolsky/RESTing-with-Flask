@@ -5,7 +5,7 @@ operate on collections and we had none of these.  In this section we shall
 build one.
 
 Start with https://restfulapi.net/  Overall it is a good summary of the best
-practices.  In this seciton we will make at least one deviation from those, so
+practices.  In this section we will make at least one deviation from those, so
 be on a look out.
 
 Review [some examples](https://openclassrooms.com/en/courses/3432056-build-your-web-projects-with-rest-apis/3496011-identify-examples-of-rest-apis):

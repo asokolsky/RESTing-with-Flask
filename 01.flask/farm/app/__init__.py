@@ -12,8 +12,6 @@ def create_app( cfgfile ):
     if app is None:
         app = Flask(
             'farm', #__name__,
-            static_folder='static',
-            static_url_path='',
             instance_path=abspath(join( __file__, '../../conf' )),
             instance_relative_config=True)
     if cfgfile:

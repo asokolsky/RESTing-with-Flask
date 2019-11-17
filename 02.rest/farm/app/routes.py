@@ -1,6 +1,7 @@
 import sys
 from flask import jsonify, request, url_for
 from json import dumps
+import datetime
 
 from . import app, log
 from . import dataset
@@ -79,3 +80,17 @@ def api_animal(id):
 
     assert request.method == 'PATCH'
     return error400('Not implemented yet')
+
+@app.route('/api/v1/_conf', methods=['GET'])
+def api_conf():
+    res = {} 
+    for k,v in app.config.items():
+        if(k == 'SECRET_KEY'):
+            # keep the secret secret
+            continue
+        log.debug("%s:%s", k, v)
+        if(isinstance(v, datetime.timedelta)):
+            # this type crashes jsonify
+            v = str(v)
+        res[ k ] = v
+    return jsonify(res)

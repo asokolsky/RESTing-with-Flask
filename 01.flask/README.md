@@ -5,8 +5,6 @@ See farm folder.  Here is the recommended way to start working on this:
 
 ```bash
 alex@latitude:~$ cd Projects/RESTing-with-Flask
-RESTing-with-Flask/      RESTing-with-Flask.wiki/ 
-alex@latitude:~$ cd Projects/RESTing-with-Flask
 alex@latitude:~/Projects/RESTing-with-Flask$ cd 01
 alex@latitude:~/Projects/RESTing-with-Flask/01$ code .
 alex@latitude:~/Projects/RESTing-with-Flask/01$ 

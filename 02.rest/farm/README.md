@@ -15,6 +15,8 @@ As before, farm server is launched using farm start command.
 We added  some logging for extra verbosity.
 Here is a decent [primer on flask logging](https://www.scalyr.com/blog/getting-started-quickly-with-flask-logging/).
 
+We also made provisions for serving static content from folder app/static.
+
 ## Client
 
 Module [restc.py](restc.py) has python implementation of HTTP client.  It relies on session
