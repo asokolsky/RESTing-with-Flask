@@ -3,11 +3,12 @@
 ## Farm Configuration
 
 Folder conf contains configuration files.  Default configuration file name is
-farm.cfg.  This file is read by both farm server and client.
+farm.cfg.  This file is read by both farm server and client - after all both
+need to know where the server is located.
 
 ## Server
 
-We are starting with a 'Hello World' server implemented in python3 using
+We begin with a 'Hello World' server implemented in python3 using
 (bare) Flask.
 
 To learn more about building flask applications check out:
@@ -60,6 +61,7 @@ Initializing...
  * Debugger is active!
  * Debugger PIN: 335-616-217
 ```
+
 You can now point your web browser to http://127.0.0.1:44444/ and see the results!
 
 Important things to note:
@@ -100,3 +102,20 @@ got back: {
     "message": "Hello, World!"
 }
 ```
+
+## Note on Python
+
+Python, being an interpreter, may be late in reporting problems.  Now and then
+I run pyflakes:
+
+```bash
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask/farm$ pyflakes farm
+farm:32: redefinition of unused 'app' from line 29
+farm:52: redefinition of unused 'app' from line 49
+
+```
+
+## Note on Flask Process(es)
+
+You can run Flask app threaded or with multiple processes.
+

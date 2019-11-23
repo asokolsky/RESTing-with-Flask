@@ -121,6 +121,11 @@ Collecting argparse
   Downloading https://files.pythonhosted.org/packages/f2/94/3af39d34be01a24a6e65433d19e107099374224905f1e0cc6bbe1fd22a2f/argparse-1.4.0-py2.py3-none-any.whl
 Installing collected packages: argparse
 Successfully installed argparse-1.4.0
+alex@latitude:~$ pip3 install pid
+Collecting pid
+  Downloading https://files.pythonhosted.org/packages/82/bc/3633e94577c0f64864684be5a73251f194fd8673fb7c1f095597ef34dbc2/pid-2.2.5-py2.py3-none-any.whl
+Installing collected packages: pid
+Successfully installed pid-2.2.5
 ```
 
 ## Development Environment Setup - Visual Studio Code
