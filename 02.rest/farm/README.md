@@ -12,10 +12,11 @@ the server and the client.
 
 As before, farm server is launched using farm start command.
 
-We added  some logging for extra verbosity.
-Here is a decent [primer on flask logging](https://www.scalyr.com/blog/getting-started-quickly-with-flask-logging/).
+We added:
 
-We also made provisions for serving static content from folder app/static.
+* some logging for extra verbosity.
+Here is a decent [primer on flask logging](https://www.scalyr.com/blog/getting-started-quickly-with-flask-logging/).
+* provisions for serving static content from folder static.
 
 ## Client
 
@@ -28,7 +29,7 @@ Farm python client now supports HTTP POST.  Along with the previously
 implemented GET those two constitute a low level farm actions.  Moreover, farm
 python client now adds high level actions for animal collection:
 
-```
+```bash
 farm animal new|get|del|mod
 ```
 
@@ -36,7 +37,7 @@ farm animal new|get|del|mod
 
 Test low level APIs:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ ./farm -v post /api/v1/animal '{"name":"fluff"}'
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -61,7 +62,7 @@ got back: {
 
 Now to high level farm client functions:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ ./farm animal get 754e424a-37be-4457-96a1-8f2e0a2ab58c
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -104,7 +105,7 @@ does not even have to run for the test to work!
 
 To launch all the tests:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 -m unittest
 ```
 
@@ -113,7 +114,7 @@ unit test on those.
 
 Alternatively you can test one module at a time:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_restc.py
 alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_farm.py
 ```

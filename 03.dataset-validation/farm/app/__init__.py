@@ -17,12 +17,13 @@ def create_app( cfgfile ):
     global app
     global log
     if app is None:
+        static_folder = abspath('static')
         app = Flask(
             'farm', #__name__,
-            static_folder='static',
-            static_url_path='',
+            static_folder=static_folder, static_url_path='',
             instance_path=abspath(join( __file__, '../../conf' )),
             instance_relative_config=True)
+        print('Serving static content from', static_folder, '...')
         if cfgfile:
             print('Loading config from', cfgfile, '...')
             app.config.from_pyfile(cfgfile)
