@@ -1,11 +1,40 @@
 # Going Production
 
-## New endpoints
+We are adding the following to make the application ready for production
+deployment:
 
-We added the following new endpoints necessary to make the app production ready:
+* add new endpoints for application version information
+* add integration with Prometheus
+* add support for deployment with NGINX and uWSGI
+
+## Adding Version
+
+The following new endpoints expose application version information:
 
 /api/v1/_about
 /api/v1/_config
+
+To display it using CLI:
+
+```bash
+alex@latitude:~/Projects/RESTing-with-Flask/05.production/farm$ ./farm --version
+2019.11.23
+```
+
+or if the farm server is running:
+
+```bash
+alex@latitude:~/Projects/RESTing-with-Flask/05.production/farm$ ./farm get /api/v1/_about
+Loading config from farm.cfg ...
+Logging level set to 10 DEBUG
+20191123.174554.486 [10] [140250226689856] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
+20191123.174554.488 [10] [140250226689856] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/_about HTTP/1.1" 200 39
+got back: {
+    "name": "farm",
+    "version": "2019.11.23"
+}
+
+```
 
 ## Prometheus
 

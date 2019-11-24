@@ -1,14 +1,14 @@
-import sys
-from flask import jsonify, request, url_for
+from flask import jsonify, request, url_for, make_response
 from json import dumps
 from schema import (
-    Schema,
+    #Schema,
     SchemaError,
-    SchemaForbiddenKeyError,
-    SchemaMissingKeyError,
-    SchemaUnexpectedTypeError,
-    SchemaWrongKeyError,
+    #SchemaForbiddenKeyError,
+    #SchemaMissingKeyError,
+    #SchemaUnexpectedTypeError,
+    #SchemaWrongKeyError,
 )
+from prometheus_client import generate_latest
 
 from . import app, log
 from . import dataset
@@ -115,3 +115,9 @@ def api_config():
         dat[ k ] = v
 
     return jsonify(dat)
+
+@app.route('/api/v1/metrics', methods=['GET'])
+def api_metrics():
+    r = make_response(generate_latest(), 200)
+    r.mimetype = 'text/plain; version=0.0.4; charset=utf-8'
+    return r

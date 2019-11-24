@@ -2,7 +2,7 @@ from requests import Session
 from abc import ABC, abstractmethod 
 from farm_schema import AnimalSchema
 
-from . import app, log
+from . import log
 
 class DataSet(ABC):
     '''

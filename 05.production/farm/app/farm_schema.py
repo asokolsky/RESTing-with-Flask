@@ -1,8 +1,8 @@
 from schema import (
     And,
-    Const,
+    #Const,
     Optional,
-    Or,
+    #Or,
     Regex,
     Schema,
     SchemaError,

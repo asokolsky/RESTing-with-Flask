@@ -13,28 +13,36 @@ import sys
 from argparse import ArgumentParser
 from json import dumps, loads, JSONDecodeError
 from uuid import uuid4 
+
+from app import create_app, init_app, __version__
 from restc import rest_client
+
 
 def farm_stub( options ):
     '''
     Called when user executes ./farm
     '''
-    ap.print_help()
+    if options.version:
+        print( __version__ )
+    else:
+        ap.print_help()
     return
 
 def farm_start( options ):
     '''
     Launch Farm REST API development server.
+    Do not use this in production.
     Called when user executes, e.g.
     ./farm -c farm.cfg start
     '''
-    from app import app, create_app, init_app
 
     app = create_app(options.config)
+    iface = app.config.get('FARM_IF')
+    port = int(app.config.get('FARM_PORT'))
     init_app(app)
+    print('Serving static content from', app.static_folder, '...')
     try:
-        app.run(host=app.config.get('FARM_IF'),
-            port=int(app.config.get('FARM_PORT')))
+        app.run(host=iface, port=port)
     except Exception as e:
         print('Failed to start farm: ', str(e))
     return
@@ -44,7 +52,6 @@ def build_client(options):
     Load config file and build an instance of rest_client
     Returns a rest_client
     '''
-    from app import app, create_app
 
     app = create_app(options.config)
     iface = app.config.get('FARM_IF')
@@ -186,6 +193,12 @@ ap.add_argument(
     action='store_true',
     default=False,
     help = 'Tell more about what is going on')
+ap.add_argument(
+    '-V',
+    '--version',
+    action='store_true',
+    default=False,
+    help = 'Display version and exit')
 ap.set_defaults( func = farm_stub )
 
 # start adding sub-commands

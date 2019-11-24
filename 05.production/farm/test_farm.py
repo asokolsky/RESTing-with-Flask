@@ -12,7 +12,7 @@ import random
 from uuid import uuid4 
 from json import loads
 
-from app import app, create_app, init_app
+from app import create_app, init_app
 
 def get_random(ar):
     return ar[random.randint(0, len(ar)-1)]

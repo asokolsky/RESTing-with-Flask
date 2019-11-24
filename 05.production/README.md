@@ -3,4 +3,4 @@
 Proceed to the farm folder to examine how
 
 * Prometheus client is integrated;
-* Production deployment is done.
+* Production deployment with NGINX and uWSGI is done.

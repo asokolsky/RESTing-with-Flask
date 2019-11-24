@@ -8,8 +8,8 @@
 import unittest
 from schema import (
     Schema,
-    SchemaError,
-    Use,
+    #SchemaError,
+    #Use,
 )
 
 from dataset import DataSet
