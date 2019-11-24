@@ -52,6 +52,21 @@ class DataSet(ABC):
         '''
         pass
 
+    @abstractmethod
+    def pop(self, id):
+        '''
+        Removes the record identified by id from the dataset
+        Returns the data (if found) or None.
+        '''
+        pass
+
+    @abstractmethod
+    def ids(self):
+        '''
+        Returns iterator by all doc ids
+        '''
+        pass
+
 
 class DataSetRAM(DataSet):
     '''
@@ -85,6 +100,20 @@ class DataSetRAM(DataSet):
         self.data[id] = dat
         return True
 
+    def pop(self, id):
+        '''
+        Removes the record identified by id from the dataset.
+        Returns the data (if found) or None.
+        '''
+        self.data.pop(id, None)
+        pass
+
+    def ids(self):
+        '''
+        Returns iterator by all doc ids
+        '''
+        return self.data.keys()
+
 
 class DataSetCouchDB(DataSet):
     '''
@@ -98,6 +127,7 @@ class DataSetCouchDB(DataSet):
             url - CouchDB URL
         '''
         super().__init__(name, schema)
+        # TCP session to talk to CouchDB
         self.ses = Session()
         self.url = url
         self.db_name = 'db_' + name
@@ -175,6 +205,48 @@ class DataSetCouchDB(DataSet):
         log.info('put_(%s) => None', id)
         return None
 
+    def pop(self, id):
+        '''
+        Removes the record identified by id from the dataset.
+        Returns the data (if found) or None.
+        '''
+        if(not self.db_exists):
+            return None
+        url = self.url + '/' + self.db_name + '/' + id
+        # first get it from the DB
+        resp = self.ses.get(url)
+        log.debug('ses.get(%s) => %d', url, resp.status_code)
+        if(resp.status_code != 200):
+            return None
+        res = resp.json()
+        del res['_id']
+        rev = res.pop('_rev', None)
+        if rev is None:
+            return None
+
+        # now let's delete it!
+        url = url + '?rev=' + rev
+        resp = self.ses.delete(url)
+        log.debug('ses.delete(%s) => %d', url, resp.status_code)
+        log.info('pop(%s) => %s', id, str(res))
+        return res 
+
+    def ids(self):
+        '''
+        Returns iterator by all doc ids
+        '''
+        if(not self.db_exists):
+            return []
+        # get the list of all the docs from the DB
+        url = self.url + '/' + self.db_name + '/_all_docs'
+        resp = self.ses.get(url)
+        log.debug('ses.get(%s) => %d', url, resp.status_code)
+        if(resp.status_code != 200):
+            return []
+        res = resp.json()
+        return [ row['id'] for row in res.get('rows', []) ]
+
+
 # we will be storing animals here
 theAnimals = None
 
@@ -184,6 +256,8 @@ def init_dataset(aconfig):
         aconfig is an app config dictionary.
     SideEffect:
         assigns an object to theAnimals
+    Returns:
+        True is succeeds
     '''
     global theAnimals
     dstore = aconfig.get('DATASTORE')

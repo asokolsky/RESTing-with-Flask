@@ -36,7 +36,7 @@ def api_animals():
     if request.method == 'GET':
         # get all the animals
         res = []
-        for id in dataset.theAnimals.data.keys():
+        for id in dataset.theAnimals.ids():
             elt = { 
                 'id' : id,
                 '_href' : url_for('api_animal', id=id),

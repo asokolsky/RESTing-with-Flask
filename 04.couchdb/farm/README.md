@@ -4,8 +4,8 @@
 
 In this section we are adding the following functionality:
 
-* farm server now talks to CouchDB!  Corresponding additions were made in
-conf/farm.cfg
+* farm server now talks to CouchDB!  See app/dataset.py for implementation.
+* CouchDB instance configuration is now a part of conf/farm.cfg
 
 ## Client
 
