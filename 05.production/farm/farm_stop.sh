@@ -12,15 +12,15 @@ NGINX_PID=logs/nginx.pid
 #
 # Define uWSGI stuff
 #
-UWSGI=/usr/bin/uwsgi
+UWSGI=~/.local/bin/uwsgi
 UWSGI_PID=logs/uwsgi.pid
 UWSGI_LOG=logs/uwsgi.log
 #
 # stop NGINX
 #
-if [ -f $NGINX_PID]; then
+if [ -f $NGINX_PID ]; then
     echo "Stopping NGINX.."
-    $NGINX -c $NGINX_CONFIG -p . stop
+    $NGINX -c $NGINX_CONFIG -p . -s stop
 else
     echo "Can't find $NGINX_PID"
 fi
@@ -28,18 +28,18 @@ fi
 # rotate the NGINX logs
 #
 TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
-if [ -f $NGINX_ELOG]; then
+if [ -f $NGINX_ELOG ]; then
     echo "Backing up $NGINX_ELOG"
     mv "$NGINX_ELOG" "$NGINX_ELOG.$TIMESTAMP"
 fi
-if [ -f $NGINX_ALOG]; then
+if [ -f $NGINX_ALOG ]; then
     echo "Backing up $NGINX_ALOG"
     mv "$NGINX_ALOG" "$NGINX_ALOG.$TIMESTAMP"
 fi
 #
 # stop uWSGI
 #
-if [ -f $UWSGI_PID]; then
+if [ -f $UWSGI_PID ]; then
     echo "Stopping uWSGI.."
     $UWSGI --stop $UWSGI_PID
 else
@@ -48,7 +48,7 @@ fi
 #
 # rotate the uWSGI logs
 #
-if [ -f $UWSGI_LOG]; then
+if [ -f $UWSGI_LOG ]; then
     echo "Backing up $UWSGI_LOG"
     mv "$UWSGI_LOG" "$UWSGI_LOG.$TIMESTAMP"
 fi

@@ -7,21 +7,22 @@ deployment:
 * add integration with Prometheus
 * add support for deployment with NGINX and uWSGI
 
-## Adding Version
+## Adding Version Information
 
-The following new endpoints expose application version information:
+The following new endpoints expose application version and configuration
+information:
 
-/api/v1/_about
-/api/v1/_config
+* /api/v1/_about, GET
+* /api/v1/_config, GET
 
-To display it using CLI:
+To display version in CLI use:
 
 ```bash
 alex@latitude:~/Projects/RESTing-with-Flask/05.production/farm$ ./farm --version
 2019.11.23
 ```
 
-or if the farm server is running:
+You can also retrieve it from a running server:
 
 ```bash
 alex@latitude:~/Projects/RESTing-with-Flask/05.production/farm$ ./farm get /api/v1/_about
@@ -33,258 +34,86 @@ got back: {
     "name": "farm",
     "version": "2019.11.23"
 }
-
 ```
 
 ## Prometheus
 
-Prometheus support is implemented in the REST server.
+### Collecting and Exposing Metrics
 
-## Server
+Prometheus support is implemented in app/metrics.py.  We introduce
 
-In this section we are adding the following functionality:
+* Prometheus counter fro endpoint use;
+* Prometheus histogram for latency of each endpoint;
+* metric info to supply our application name and version to Prometheus.
 
-* farm server now talks to CouchDB!  Corresponding additions were made in
-conf/farm.cfg
+During application initialization (see init_app in app/__init__.py))
+setup_metrics is called which in turn installs two hooks to be called before
+and after every flask request processing.  This allows us to count and time the
+processed requests.
 
-## Client
+We expose the accumulated information to Prometheus for scraping via an
+endpoint /api/v1/metrics, GET - see app/routes.py
 
-CLI farm client now understands 'all', so that you can do:
+### Accessing the Metrics
 
-```bash
-farm animal get all
-farm animal del all
-```
+You can and should setup prometheus and grafana (both are readily available
+with any mature Linux distribution) and create a dashboard to display farm
+data.  Or you could just use a shortcut and point browser to
 
-## Playing with the Farm
+ http://localhost:44444/api/v1/metrics
 
-Let's start with the low level APIs that used to work for us in the past:
+The information is presented in a readable and digestible format.
 
-```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm -v post /api/v1/animal '{"name":"fluff"}'
-Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-HTTP POST http://127.0.0.1:44444/api/v1/animal {'name': 'fluff', 'id': 'e738e53e-5354-4b80-88bb-7357c394ac88'}
-20191026.160610.267 [10] [140208474548032] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.160610.270 [10] [140208474548032] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 409 85
-HTTP POST => 409 , {'http_status_code': 409, 'text': "Request data error: Missing keys: 'sex', 'species'"}
-got back: {
-    "http_status_code": 409,
-    "text": "Request data error: Missing keys: 'sex', 'species'"
-}
-```
+## Production Architecture: NGINX and uWSGI
 
-We are getting data validation error along with explanation of what is
-expected.  Let's supply the requested data:
+For development we use a development HTTP server built into FLASK.  This does
+not scale for production.  I understand HTTP header processing is taxing and
+there are no provisions to start extra instances of the service if the load
+increases.
 
-```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm -v post /api/v1/animal '{"name":"fluff", "sex":"female", "species":"chicken"}'
-Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-HTTP POST http://127.0.0.1:44444/api/v1/animal {'name': 'fluff', 'sex': 'female', 'species': 'chicken', 'id': 'c63226fb-1ae1-4d65-8c5c-c991dea4ae91'}
-20191026.160819.216 [10] [139883014424384] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.160819.218 [10] [139883014424384] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 201 108
-HTTP POST => 201 , {'_href': '/api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91', 'id': 'c63226fb-1ae1-4d65-8c5c-c991dea4ae91'}
-got back: {
-    "_href": "/api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91",
-    "id": "c63226fb-1ae1-4d65-8c5c-c991dea4ae91"
-}
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm get /api/v1/animal
-Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-20191026.160939.899 [10] [139829478987584] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.160939.901 [10] [139829478987584] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/animal HTTP/1.1" 200 110
-got back: [
-    {
-        "_href": "/api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91",
-        "id": "c63226fb-1ae1-4d65-8c5c-c991dea4ae91"
-    }
-]
-```
+There are multiple options for running FLASK in production.  Here is my
+favorite:
 
-Now to high level farm client functions:
+* Use [NGINX](https://www.nginx.com) as a front end and to serve static
+content.  NGINX is highly efficient at this.
+* NGINX natively supports binary [uwsgi
+protocol](https://uwsgi-docs.readthedocs.io/en/latest/Protocol.html) to
+communicate with FLASK app hosted, e.g. by
+[uWSGI](https://uwsgi-docs.readthedocs.io/en/latest/).
+
+The above ensures that:
+
+* heavy lifting in static content serving and HTTP processing is done in native
+code by NGINX
+* communication with FLASK app is done efficiently using a binary protocol
+* FLASK no longer responsible for HTTP header processing
+* multiple instances of FLASK app can be used.
+
+The latter also presents a challenge e.g. for collecting prometheus data, but
+let's make one step at a time.
+
+## Installing Prometheus, NGINX, uWSGI
+
+All these are readily available from your OS vendor.  I used:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal get c63226fb-1ae1-4d65-8c5c-c991dea4ae91
-Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-20191026.161210.562 [10] [140065103394624] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.161210.564 [10] [140065103394624] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91 HTTP/1.1" 200 96
-got back: {
-    "id": "c63226fb-1ae1-4d65-8c5c-c991dea4ae91",
-    "name": "fluff",
-    "sex": "female",
-    "species": "chicken"
-}
+sudo apt-get install prometheus nginx uwsgi
 ```
 
-Check out data validation with higher level API:
+## Putting it all Together
 
-```bash
+The following pieces glue NGINX, uWSGI and FLASK farm app together:
 
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal new '{"species":"chicken"}' -n 10
-Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-20191026.161509.218 [10] [140563344652096] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.161509.220 [10] [140563344652096] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 409 73
-got back: {
-    "http_status_code": 409,
-    "text": "Request data error: Missing key: 'sex'"
-}
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal new '{"species":"chicken", "sex":"female"}' -n 10
-Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-20191026.161601.387 [10] [139732719073088] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.161601.390 [10] [139732719073088] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 201 108
-got back: {
-    "_href": "/api/v1/animal/1c02b74d-7ecf-4c9a-8a75-4ae72f07a2aa",
-    "id": "1c02b74d-7ecf-4c9a-8a75-4ae72f07a2aa"
-}
-20191026.161601.392 [10] [139732719073088] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.161601.394 [10] [139732719073088] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 201 108
-got back: {
-    "_href": "/api/v1/animal/902b474b-6d7f-44dc-8e39-e21483a70d69",
-    "id": "902b474b-6d7f-44dc-8e39-e21483a70d69"
-}
-...
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal del 4a070f6e-9fc6-493a-acc3-6f8b9a13fba4
-Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-20191026.161909.946 [10] [140600444168000] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.161909.948 [10] [140600444168000] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/4a070f6e-9fc6-493a-acc3-6f8b9a13fba4 HTTP/1.1" 200 3
-got back: {}
-```
-
-Now let's try wildcard argument we introduced in this section:
-
-```bash
-
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal del all
-Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-20191026.162917.879 [10] [140337524324160] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.162917.881 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/animal HTTP/1.1" 200 1082
-got back: [
-    {
-        "_href": "/api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91",
-        "id": "c63226fb-1ae1-4d65-8c5c-c991dea4ae91"
-    },
-    {
-        "_href": "/api/v1/animal/1c02b74d-7ecf-4c9a-8a75-4ae72f07a2aa",
-        "id": "1c02b74d-7ecf-4c9a-8a75-4ae72f07a2aa"
-    },
-    {
-        "_href": "/api/v1/animal/902b474b-6d7f-44dc-8e39-e21483a70d69",
-        "id": "902b474b-6d7f-44dc-8e39-e21483a70d69"
-    },
-    {
-        "_href": "/api/v1/animal/c5d05459-055b-4431-bb08-f5152d844934",
-        "id": "c5d05459-055b-4431-bb08-f5152d844934"
-    },
-    {
-        "_href": "/api/v1/animal/b4fb5630-e3a6-46f9-b45f-5e333c51c64b",
-        "id": "b4fb5630-e3a6-46f9-b45f-5e333c51c64b"
-    },
-    {
-        "_href": "/api/v1/animal/4fae682b-e928-4c54-9aff-010aafc80a29",
-        "id": "4fae682b-e928-4c54-9aff-010aafc80a29"
-    },
-    {
-        "_href": "/api/v1/animal/f6f7b6b0-c896-4ebd-a116-4e6929bd033e",
-        "id": "f6f7b6b0-c896-4ebd-a116-4e6929bd033e"
-    },
-    {
-        "_href": "/api/v1/animal/e2984038-4c32-4bc2-ac86-0e50ec17e869",
-        "id": "e2984038-4c32-4bc2-ac86-0e50ec17e869"
-    },
-    {
-        "_href": "/api/v1/animal/06a32ef8-5b0f-46b2-8f3c-a816da12f34c",
-        "id": "06a32ef8-5b0f-46b2-8f3c-a816da12f34c"
-    },
-    {
-        "_href": "/api/v1/animal/46cc979c-1f49-4983-b589-098f447360eb",
-        "id": "46cc979c-1f49-4983-b589-098f447360eb"
-    }
-]
-{'_href': '/api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91', 'id': 'c63226fb-1ae1-4d65-8c5c-c991dea4ae91'}
-20191026.162917.884 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.885 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91 HTTP/1.1" 200 3
-got back: {}
-{'_href': '/api/v1/animal/1c02b74d-7ecf-4c9a-8a75-4ae72f07a2aa', 'id': '1c02b74d-7ecf-4c9a-8a75-4ae72f07a2aa'}
-20191026.162917.888 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.890 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/1c02b74d-7ecf-4c9a-8a75-4ae72f07a2aa HTTP/1.1" 200 3
-got back: {}
-{'_href': '/api/v1/animal/902b474b-6d7f-44dc-8e39-e21483a70d69', 'id': '902b474b-6d7f-44dc-8e39-e21483a70d69'}
-20191026.162917.892 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.894 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/902b474b-6d7f-44dc-8e39-e21483a70d69 HTTP/1.1" 200 3
-got back: {}
-{'_href': '/api/v1/animal/c5d05459-055b-4431-bb08-f5152d844934', 'id': 'c5d05459-055b-4431-bb08-f5152d844934'}
-20191026.162917.896 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.899 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/c5d05459-055b-4431-bb08-f5152d844934 HTTP/1.1" 200 3
-got back: {}
-{'_href': '/api/v1/animal/b4fb5630-e3a6-46f9-b45f-5e333c51c64b', 'id': 'b4fb5630-e3a6-46f9-b45f-5e333c51c64b'}
-20191026.162917.901 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.904 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/b4fb5630-e3a6-46f9-b45f-5e333c51c64b HTTP/1.1" 200 3
-got back: {}
-{'_href': '/api/v1/animal/4fae682b-e928-4c54-9aff-010aafc80a29', 'id': '4fae682b-e928-4c54-9aff-010aafc80a29'}
-20191026.162917.905 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.907 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/4fae682b-e928-4c54-9aff-010aafc80a29 HTTP/1.1" 200 3
-got back: {}
-{'_href': '/api/v1/animal/f6f7b6b0-c896-4ebd-a116-4e6929bd033e', 'id': 'f6f7b6b0-c896-4ebd-a116-4e6929bd033e'}
-20191026.162917.909 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.912 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/f6f7b6b0-c896-4ebd-a116-4e6929bd033e HTTP/1.1" 200 3
-got back: {}
-{'_href': '/api/v1/animal/e2984038-4c32-4bc2-ac86-0e50ec17e869', 'id': 'e2984038-4c32-4bc2-ac86-0e50ec17e869'}
-20191026.162917.915 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.918 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/e2984038-4c32-4bc2-ac86-0e50ec17e869 HTTP/1.1" 200 3
-got back: {}
-{'_href': '/api/v1/animal/06a32ef8-5b0f-46b2-8f3c-a816da12f34c', 'id': '06a32ef8-5b0f-46b2-8f3c-a816da12f34c'}
-20191026.162917.919 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.921 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/06a32ef8-5b0f-46b2-8f3c-a816da12f34c HTTP/1.1" 200 3
-got back: {}
-{'_href': '/api/v1/animal/46cc979c-1f49-4983-b589-098f447360eb', 'id': '46cc979c-1f49-4983-b589-098f447360eb'}
-20191026.162917.922 [10] [140337524324160] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20191026.162917.925 [10] [140337524324160] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/46cc979c-1f49-4983-b589-098f447360eb HTTP/1.1" 200 3
-got back: {}
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal get all
-Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-20191026.162926.350 [10] [139729107265344] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.162926.352 [10] [139729107265344] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/animal HTTP/1.1" 200 3
-got back: []
-```
-
-## Testing Farm
-
-We added tests in the app folder.  To launch all the tests:
-
-```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest
-..
-----------------------------------------------------------------------
-Ran 2 tests in 0.001s
-
-OK
-```
-
-The above will look for all the python files starting with test_ and will run
-unit test on those.
-
-Alternatively you can test one module at a time:
-
-```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest test_dataset -v
-test_dataset (test_dataset.TestDataset) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest test_farm_schema -v
-test_animal_schema (test_farm_schema.TestFarmSchema) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.001s
-
-OK
-```
+* conf/nginx_uwsgi.conf is NGINX configuration file. It instructs NGINX to:
+    * present itself to outside world at port 44444;
+    * serve static content from folder static;
+    * route traffic to URIs starting with '/api' to unix socket
+    /var/tmp/farm.socket
+    
+* conf/farm_uwsgi.cfg is our farm configuration file to be used in production.
+Note it has interface/port definition absent.
+* directory logs will hold server log and pid files
+* shell scripts farm_start.sh and farm_stop.sh designed to:
+    * start /stop the production server
+    * create log and pid files in folder logs
+    * backup logs upon start/stop
