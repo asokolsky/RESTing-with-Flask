@@ -26,18 +26,6 @@ if [ -f $NGINX_PID ]; then
 #    echo "Can't find $NGINX_PID"
 fi
 #
-# rotate the NGINX logs
-#
-TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
-if [ -f $NGINX_ELOG ]; then
-    echo "Backing up $NGINX_ELOG"
-    mv "$NGINX_ELOG" "$NGINX_ELOG.$TIMESTAMP"
-fi
-if [ -f $NGINX_ALOG ]; then
-    echo "Backing up $NGINX_ALOG"
-    mv "$NGINX_ALOG" "$NGINX_ALOG.$TIMESTAMP"
-fi
-#
 # stop uWSGI
 #
 if [ -f $UWSGI_PID ]; then
@@ -47,14 +35,21 @@ else
     echo "Can't find $UWSGI_PID"
 fi
 # for some reason once is not enouhg ;-(
-if [ -f $UWSGI_PID ]; then
-    echo "Stopping uWSGI.."
-    $UWSGI --stop $UWSGI_PID
-fi
+#if [ -f $UWSGI_PID ]; then
+#    echo "Stopping uWSGI.."
+#    $UWSGI --stop $UWSGI_PID
+#fi
 #
-# rotate the uWSGI logs
+# rotate the NGINX & uWSGI logs
 #
-if [ -f $UWSGI_LOG ]; then
-    echo "Backing up $UWSGI_LOG"
-    mv "$UWSGI_LOG" "$UWSGI_LOG.$TIMESTAMP"
-fi
+TIMESTAMP=`date "+%Y%m%d.%H%M%S"`
+
+move_if_exists() {
+    if [ -f $1 ]; then
+        echo "Backing up $1"
+        mv $1 "$1.$TIMESTAMP"
+    fi
+}
+move_if_exists $UWSGI_LOG
+move_if_exists $NGINX_ELOG
+move_if_exists $NGINX_ALOG

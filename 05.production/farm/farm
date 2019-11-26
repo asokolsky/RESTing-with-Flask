@@ -14,7 +14,7 @@ from argparse import ArgumentParser
 from json import dumps, loads, JSONDecodeError
 from uuid import uuid4 
 
-from app import create_app, init_app, __version__
+from app import app_configure, app_initialize, __version__
 from restc import rest_client
 
 
@@ -36,11 +36,11 @@ def farm_start( options ):
     ./farm -c farm.cfg start
     '''
 
-    app = create_app(options.config)
+    app = app_configure(options.config)
+    app_initialize()
+    print('Serving static content from', app.static_folder, '...')
     iface = app.config.get('FARM_IF')
     port = int(app.config.get('FARM_PORT'))
-    init_app(app)
-    print('Serving static content from', app.static_folder, '...')
     try:
         app.run(host=iface, port=port)
     except Exception as e:
@@ -53,7 +53,7 @@ def build_client(options):
     Returns a rest_client
     '''
 
-    app = create_app(options.config)
+    app = app_configure(options.config)
     iface = app.config.get('FARM_IF')
     port = app.config.get('FARM_PORT')
     return rest_client(iface, port, options.verbose)
