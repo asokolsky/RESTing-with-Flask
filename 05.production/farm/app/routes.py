@@ -1,5 +1,7 @@
+from datetime import timedelta
 from flask import jsonify, request, url_for, make_response
 from json import dumps
+from prometheus_client import generate_latest
 from schema import (
     #Schema,
     SchemaError,
@@ -8,7 +10,6 @@ from schema import (
     #SchemaUnexpectedTypeError,
     #SchemaWrongKeyError,
 )
-from prometheus_client import generate_latest
 
 from . import app, log
 from . import dataset
@@ -36,7 +37,7 @@ def api_animals():
     if request.method == 'GET':
         # get all the animals
         res = []
-        for id in dataset.theAnimals.data.keys():
+        for id in dataset.theAnimals.ids():
             elt = { 
                 'id' : id,
                 '_href' : url_for('api_animal', id=id),
@@ -48,7 +49,6 @@ def api_animals():
     # create a new animal from the POSTed data
     rd = request.get_json(force=True, silent=True) # , cache=False
     log.info('/api/v1/animal POST %s', str(rd))
-    #print('/api/v1/animal POST', str(rd), file=sys.stderr)
     if rd is None:
         return error409('Request must be a JSON')
 
@@ -84,8 +84,7 @@ def api_animal(id):
         return jsonify(dat)
 
     if request.method == 'DELETE':
-        dat = dataset.theAnimals.pop(id)
-        assert dat is not None
+        dataset.theAnimals.pop(id)
         res = {}
         return jsonify(res)
 
@@ -103,8 +102,6 @@ def api_about():
         'version' : __version__
     }
     return jsonify(dat)
-
-from datetime import timedelta
 
 @app.route('/api/v1/_config', methods=['GET'])
 def api_config():

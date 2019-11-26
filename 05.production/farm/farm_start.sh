@@ -2,11 +2,21 @@
 #
 # Production farm start script
 #
-# NGINX<--UDS-->uWSGI<-->FLASK
+# Two configurations are possible:
+#
+# Client<-->NGINX<-->UDS<-->uWSGI<-->FLASK
+#
+# or
+#
+# Client<-->uWSGI<-->FLASK
+#
+# see lines maked "pick the config here"
 #
 # Define NGINX stuff
 #
-NGINX=/usr/sbin/nginx
+# pick the config here:
+#NGINX=/usr/sbin/nginx
+NGINX=/doesnotexist
 NGINX_CONF=conf/nginx_uwsgi.conf
 NGINX_ELOG=logs/nginx_elog.log
 NGINX_ALOG=logs/nginx_alog.log
@@ -14,15 +24,17 @@ NGINX_PID=logs/nginx.pid
 #
 # Define uWSGI stuff
 #
+# pick the config here:
+#UWSGI_INI=conf/uwsgi_nginx.ini
+UWSGI_INI=conf/uwsgi_only.ini
 UWSGI=~/.local/bin/uwsgi
-UWSGI_INI=conf/uwsgi.ini
 UWSGI_PID=logs/uwsgi.pid
 UWSGI_LOG=logs/uwsgi.log
 #
 # are we up already?
 #
 if [ -f $UWSGI_PID ]; then
-    echo "App already running: $UWSGI_PID"
+    echo "Already running: $UWSGI_PID"
     echo "Use farm_stop.sh to shut."
     exit 1
 fi
@@ -61,14 +73,18 @@ echo .
 # report progress
 #
 if [ -f $WSGI_PID ]; then
-    pstree -p `cat $UWSGI_PID`
+    echo -n "Started uwsgi: " 
+    echo `cat $UWSGI_PID`
+#    pstree -p `cat $UWSGI_PID`
     echo "uWSGI log: $UWSGI_LOG"
 fi
 #
-# start NGINX
+# start NGINX if $NGINX is a file
 #
-echo "Starting NGINX..."
-$NGINX -c $NGINX_CONF -p .
-echo "NGINX log: $NGINX_ALOG"
-echo "NGINX log: $NGINX_ELOG"
-echo "Use farm_stop.sh to shut this service"
+if [ -f $NGINX ]; then
+    echo "Starting NGINX..."
+    $NGINX -c $NGINX_CONF -p .
+    echo "NGINX log: $NGINX_ALOG"
+    echo "NGINX log: $NGINX_ELOG"
+    echo "Use farm_stop.sh to shut this service"
+fi

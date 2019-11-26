@@ -92,6 +92,9 @@ code by NGINX
 The latter also presents a challenge e.g. for collecting prometheus data, but
 let's make one step at a time.
 
+Here is a good read on running NGINX/uWSGI/FLASK:
+https://pythonise.com/series/learning-flask/python-flask-uwsgi-introduction
+
 ## Installing Prometheus, NGINX, uWSGI
 
 All these are readily available from your OS vendor.  I used:

@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Production farm stop script
+# Works for either of the two possible configs
 #
 # Define NGINX stuff
 #
@@ -21,8 +22,8 @@ UWSGI_LOG=logs/uwsgi.log
 if [ -f $NGINX_PID ]; then
     echo "Stopping NGINX.."
     $NGINX -c $NGINX_CONFIG -p . -s stop
-else
-    echo "Can't find $NGINX_PID"
+#else
+#    echo "Can't find $NGINX_PID"
 fi
 #
 # rotate the NGINX logs
@@ -44,6 +45,11 @@ if [ -f $UWSGI_PID ]; then
     $UWSGI --stop $UWSGI_PID
 else
     echo "Can't find $UWSGI_PID"
+fi
+# for some reason once is not enouhg ;-(
+if [ -f $UWSGI_PID ]; then
+    echo "Stopping uWSGI.."
+    $UWSGI --stop $UWSGI_PID
 fi
 #
 # rotate the uWSGI logs

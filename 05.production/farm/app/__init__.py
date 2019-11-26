@@ -14,51 +14,46 @@ from logging import (
 from os.path import abspath, join
 from flask import Flask
 
+from .metrics import setup_metrics
+
 __version__='2019.11.23'
 
 # main application
-app = None
-log = None
+app = Flask(
+    'farm', #__name__,
+    static_folder=abspath(join( __file__, '../../static' )),
+    static_url_path='',
+    instance_path=abspath(join( __file__, '../../conf' )),
+    instance_relative_config=True)
+setup_metrics(app)
 
-def create_app( cfgfile ):
-    '''
-    Create main app object, while ingesting the settings from the cfgfile
-    '''
+print('__init__.py: app created')
+
+mfmt = "%(asctime)s.%(msecs)03d [%(levelno)s] [%(thread)d] %(filename)s:%(lineno)s %(message)s"
+logging.basicConfig(format=mfmt, datefmt="%Y%m%d.%H%M%S")
+log = getLogger()
+
+
+def init_app(cfgfile):
+    assert cfgfile
     global app
-    if app is None:
-        app = Flask(
-            'farm', #__name__,
-            static_folder=abspath(join( __file__, '../../static' )),
-            static_url_path='',
-            instance_path=abspath(join( __file__, '../../conf' )),
-            instance_relative_config=True)
-        if cfgfile:
-            print('Loading config from', abspath(cfgfile), '...')
-            app.config.from_pyfile(cfgfile)
-
-    global log
-    if log is None:
-        mfmt = "%(asctime)s.%(msecs)03d [%(levelno)s] [%(thread)d] %(filename)s:%(lineno)s %(message)s"
-        logging.basicConfig(format=mfmt, datefmt="%Y%m%d.%H%M%S")
-        log = getLogger()
-        level = app.config.get('LOGGING_LEVEL', 'INFO')
-        iLevel = getattr(logging, str(level), INFO)
-        if isinstance(iLevel, int):
-            log.setLevel(iLevel)
-            print('Logging level set to', iLevel, level)
-
-    return app
-
-def init_app( app ):
     assert app is not None
+    global log
+    assert log is not None
+
+    print('Loading config from', abspath(cfgfile), '...')
+    app.config.from_pyfile(cfgfile)
+    level = app.config.get('LOGGING_LEVEL', 'INFO')
+    iLevel = getattr(logging, str(level), INFO)
+    if isinstance(iLevel, int):
+        log.setLevel(iLevel)
+        print('Logging level set to', iLevel, level)
+
     print('Initializing...')
     from . import routes
     from . import dataset
-    from .metrics import setup_metrics
-
-    setup_metrics(app)
 
     if not dataset.init_dataset(app.config):
-        return False
+        print('Dataset initialization failed')
 
-    return True
+    return app
