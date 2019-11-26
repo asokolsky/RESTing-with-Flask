@@ -27,7 +27,7 @@ app = Flask(
     instance_relative_config=True)
 setup_metrics(app)
 
-print('__init__.py: app created')
+#print('__init__.py: app created')
 
 mfmt = "%(asctime)s.%(msecs)03d [%(levelno)s] [%(thread)d] %(filename)s:%(lineno)s %(message)s"
 logging.basicConfig(format=mfmt, datefmt="%Y%m%d.%H%M%S")
