@@ -85,7 +85,7 @@ def api_animal(id):
 
     if request.method == 'DELETE':
         dat = dataset.theAnimals.pop(id)
-        assert dat is not None
+        #assert dat is not None
         res = {}
         return jsonify(res)
 

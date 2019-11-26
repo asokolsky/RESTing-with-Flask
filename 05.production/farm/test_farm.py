@@ -12,7 +12,7 @@ import random
 from uuid import uuid4 
 from json import loads
 
-from app import create_app, init_app
+from app import init_app
 
 def get_random(ar):
     return ar[random.randint(0, len(ar)-1)]
@@ -26,8 +26,7 @@ class TestFarm(unittest.TestCase):
         '''
         random.seed()
 
-        app = create_app('farm.cfg')
-        init_app(app)
+        app = init_app('farm_test.cfg')
 
         app.config['TESTING'] = True
         app.config['DEBUG'] = False
@@ -74,10 +73,12 @@ class TestFarm(unittest.TestCase):
         Generate a valid animal record
         '''
         # let's give it a name
-        n1 = ['little', 'big', 'tiny', 'baby', 'babe', 'ugly', 'pretty', 'skinny', 'lady',
-        'sixfinger', 'handsome', 'proud', 'steady', 'blond']
-        n2 = ['bella', 'coco', 'max', 'buddy', 'daisy', 'lola', 'luna', 'lucy', 'harley',
-        'charlie', 'pepper', 'shadow', 'gracie', 'jack', 'milo', 'rocky', 'sadie', 'stella']
+        n1 = ['little', 'big', 'tiny', 'baby', 'babe', 'ugly', 'pretty',
+              'skinny', 'lady', 'sixfinger', 'handsome', 'proud', 'steady',
+              'blond']
+        n2 = ['bella', 'coco', 'max', 'buddy', 'daisy', 'lola', 'luna', 'lucy',
+              'harley', 'charlie', 'pepper', 'shadow', 'gracie', 'jack', 'milo',
+              'rocky', 'sadie', 'stella']
         name = get_random(n1) + ' ' + get_random(n2)
         ad = {
             'id' : str(uuid4()),

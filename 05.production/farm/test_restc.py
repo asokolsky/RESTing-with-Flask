@@ -65,7 +65,7 @@ class TestRestC(unittest.TestCase):
         self.assertTrue('url' in rdata)
 
         headers = rdata['headers']
-        self.assertEqual(len(headers) >= 4)
+        self.assertTrue(len(headers) >= 4)
         self.assertTrue('Accept' in headers)
         self.assertTrue('Accept-Encoding' in headers)
         #self.assertTrue('Cache-Control' in headers)

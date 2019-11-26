@@ -26,7 +26,7 @@ class TestFarm(unittest.TestCase):
         '''
         random.seed()
 
-        app = create_app('farm.cfg')
+        app = create_app('farm_test.cfg')
         init_app(app)
 
         app.config['TESTING'] = True
@@ -74,10 +74,12 @@ class TestFarm(unittest.TestCase):
         Generate a valid animal record
         '''
         # let's give it a name
-        n1 = ['little', 'big', 'tiny', 'baby', 'babe', 'ugly', 'pretty', 'skinny', 'lady',
-        'sixfinger', 'handsome', 'proud', 'steady', 'blond']
-        n2 = ['bella', 'coco', 'max', 'buddy', 'daisy', 'lola', 'luna', 'lucy', 'harley',
-        'charlie', 'pepper', 'shadow', 'gracie', 'jack', 'milo', 'rocky', 'sadie', 'stella']
+        n1 = ['little', 'big', 'tiny', 'baby', 'babe', 'ugly', 'pretty',
+              'skinny', 'lady', 'sixfinger', 'handsome', 'proud', 'steady',
+              'blond']
+        n2 = ['bella', 'coco', 'max', 'buddy', 'daisy', 'lola', 'luna',
+              'lucy', 'harley', 'charlie', 'pepper', 'shadow', 'gracie', 'jack',
+              'milo', 'rocky', 'sadie', 'stella']
         name = get_random(n1) + ' ' + get_random(n2)
         ad = {
             'id' : str(uuid4()),
@@ -113,7 +115,7 @@ class TestFarm(unittest.TestCase):
         ans = self.get_animals()
         self.assertEqual(ans, [])
 
-        iAnimals = 5
+        iAnimals = 59
         for i in range(iAnimals):
             self.post_an_animal()
 
