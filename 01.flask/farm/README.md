@@ -117,5 +117,6 @@ farm:52: redefinition of unused 'app' from line 49
 
 ## Note on Flask Process(es)
 
-You can run Flask app threaded or with multiple processes.
+You can run Flask app threaded or with multiple processes.  For now we are runnning
+it in a default configuration: single process with threading enabled.
 
