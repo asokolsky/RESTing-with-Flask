@@ -19,4 +19,4 @@ Explore farm folder to see howto:
 * start flask app from an external python script (farm start)
 * use python to talk to a REST server (farm get /)
 
-Procceed to the farm.
+Procceed to the [farm](farm).
