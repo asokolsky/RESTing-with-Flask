@@ -18,3 +18,5 @@ Explore farm folder to see howto:
 * create a simple flask app talking json to client(s)
 * start flask app from an external python script (farm start)
 * use python to talk to a REST server (farm get /)
+
+Procceed to the farm.
