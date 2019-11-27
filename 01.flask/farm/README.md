@@ -12,7 +12,7 @@ We begin with a 'Hello World' server implemented in python3 using
 (bare) Flask.
 
 To learn more about building flask applications check out the [Flask Mega
-Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world)
+Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world).
 
 ### Starting the Server
 
