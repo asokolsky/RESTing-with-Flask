@@ -63,7 +63,7 @@ def build_client(options):
     app = create_app(options.config)
     iface = app.config.get('FARM_IF')
     port = app.config.get('FARM_PORT')
-    return rest_client(iface, port, options.verbose)
+    return rest_client(iface, port, options.verbose, options.include)
 
 def farm_get( options ):
     '''
@@ -179,6 +179,12 @@ ap.add_argument(
     action='store_true',
     default=False,
     help = 'Tell more about what is going on')
+ap.add_argument(
+    '-i',
+    '--include',
+    action='store_true',
+    default=False,
+    help = 'Include protocol headers in the output.')        
 ap.set_defaults( func = farm_stub )
 
 # start adding sub-commands

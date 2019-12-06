@@ -30,7 +30,7 @@ implemented GET those two constitute a low level farm actions.  Moreover, farm
 python client now adds high level actions for animal collection:
 
 ```bash
-farm animal new|get|del|mod
+farm animal new|get|del
 ```
 
 ## Playing with the Farm
@@ -38,24 +38,39 @@ farm animal new|get|del|mod
 Test low level APIs:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ ./farm -v post /api/v1/animal '{"name":"fluff"}'
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ ./farm -v -i post /api/v1/animal '{"name":"fluff"}'
+Serving static content from /home/alex/Projects/RESTing-with-Flask/02.rest/farm/static ...
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
-HTTP POST http://127.0.0.1:44444/api/v1/animal {'name': 'fluff', 'id': '754e424a-37be-4457-96a1-8f2e0a2ab58c'}
-20190926.190251.556 [10] [139791155849024] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20190926.190251.559 [10] [139791155849024] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 200 108
-HTTP POST => 200 , {'_href': '/api/v1/animal/754e424a-37be-4457-96a1-8f2e0a2ab58c', 'id': '754e424a-37be-4457-96a1-8f2e0a2ab58c'}
+HTTP POST http://127.0.0.1:44444/api/v1/animal {'name': 'fluff', 'id': '3f38c3bb-f910-4701-9d40-01ab6a265e84'} ...
+20191206.104849.515 [10] [139855935874880] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
+20191206.104849.518 [10] [139855935874880] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 201 108
+HTTP POST => 201 , {'_href': '/api/v1/animal/3f38c3bb-f910-4701-9d40-01ab6a265e84', 'id': '3f38c3bb-f910-4701-9d40-01ab6a265e84'}
+HTTP Response Headers:
+    Content-Type : application/json
+    Content-Length : 108
+    Location : http://127.0.0.1:44444/api/v1/animal/3f38c3bb-f910-4701-9d40-01ab6a265e84
+    Server : Werkzeug/0.15.6 Python/3.6.9
+    Date : Fri, 06 Dec 2019 18:48:49 GMT
 got back: {
-    "_href": "/api/v1/animal/754e424a-37be-4457-96a1-8f2e0a2ab58c",
-    "id": "754e424a-37be-4457-96a1-8f2e0a2ab58c"
+    "_href": "/api/v1/animal/3f38c3bb-f910-4701-9d40-01ab6a265e84",
+    "id": "3f38c3bb-f910-4701-9d40-01ab6a265e84"
 }
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ ./farm get /api/v1/animal/754e424a-37be-4457-96a1-8f2e0a2ab58c
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ ./farm -vi get /api/v1/animal/3f38c3bb-f910-4701-9d40-01ab6a265e84
+Serving static content from /home/alex/Projects/RESTing-with-Flask/02.rest/farm/static ...
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
-20190926.190459.491 [10] [140564453672768] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20190926.190459.492 [10] [140564453672768] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/animal/754e424a-37be-4457-96a1-8f2e0a2ab58c HTTP/1.1" 200 61
+HTTP GET http://127.0.0.1:44444/api/v1/animal/3f38c3bb-f910-4701-9d40-01ab6a265e84  ...
+20191206.105011.503 [10] [140159289902912] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
+20191206.105011.505 [10] [140159289902912] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/animal/3f38c3bb-f910-4701-9d40-01ab6a265e84 HTTP/1.1" 200 61
+HTTP GET => 200 , {'id': '3f38c3bb-f910-4701-9d40-01ab6a265e84', 'name': 'fluff'}
+HTTP Response Headers:
+    Content-Type : application/json
+    Content-Length : 61
+    Server : Werkzeug/0.15.6 Python/3.6.9
+    Date : Fri, 06 Dec 2019 18:50:11 GMT
 got back: {
-    "id": "754e424a-37be-4457-96a1-8f2e0a2ab58c",
+    "id": "3f38c3bb-f910-4701-9d40-01ab6a265e84",
     "name": "fluff"
 }
 ```
@@ -63,35 +78,54 @@ got back: {
 Now to high level farm client functions:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ ./farm animal get 754e424a-37be-4457-96a1-8f2e0a2ab58c
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ ./farm animal new '{"species": "chicken"}' -n 100
+Serving static content from /home/alex/Projects/RESTing-with-Flask/02.rest/farm/static ...
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
-20190926.190617.461 [10] [139689714579264] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20190926.190617.463 [10] [139689714579264] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/animal/754e424a-37be-4457-96a1-8f2e0a2ab58c HTTP/1.1" 200 61
+20191206.105202.620 [10] [140118676305728] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
+20191206.105202.622 [10] [140118676305728] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 201 108
 got back: {
-    "id": "754e424a-37be-4457-96a1-8f2e0a2ab58c",
-    "name": "fluff"
+    "_href": "/api/v1/animal/7bf4881c-fdb7-441a-96ed-10eef1e19f71",
+    "id": "7bf4881c-fdb7-441a-96ed-10eef1e19f71"
 }
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ ./farm animal new '{"species": "chicken"}' -n 100
+20191206.105202.625 [10] [140118676305728] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
+20191206.105202.627 [10] [140118676305728] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 201 108
+got back: {
+    "_href": "/api/v1/animal/e46231db-aec6-4c0e-8d82-4c0b97e2a826",
+    "id": "e46231db-aec6-4c0e-8d82-4c0b97e2a826"
+}
 ...
-0190926.190732.499 [10] [139914159785792] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 200 108
-got back: {
-    "_href": "/api/v1/animal/c15dafc0-73e9-4687-8c99-e6912e0ff360",
-    "id": "c15dafc0-73e9-4687-8c99-e6912e0ff360"
-}
-20190926.190732.501 [10] [139914159785792] connectionpool.py:243 Resetting dropped connection: 127.0.0.1
-20190926.190732.506 [10] [139914159785792] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 200 108
-got back: {
-    "_href": "/api/v1/animal/b0c1201a-4d14-4384-beec-a380f64f83e7",
-    "id": "b0c1201a-4d14-4384-beec-a380f64f83e7"
-}
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ ./farm animal del b0c1201a-4d14-4384-beec-a380f64f83e7
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ ./farm -vi animal get e46231db-aec6-4c0e-8d82-4c0b97e2a826
+Serving static content from /home/alex/Projects/RESTing-with-Flask/02.rest/farm/static ...
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
-20190926.191011.586 [10] [140403174364992] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20190926.191011.588 [10] [140403174364992] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/b0c1201a-4d14-4384-beec-a380f64f83e7 HTTP/1.1" 200 3
+HTTP GET http://127.0.0.1:44444/api/v1/animal/e46231db-aec6-4c0e-8d82-4c0b97e2a826  ...
+20191206.105733.135 [10] [140293511788352] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
+20191206.105733.137 [10] [140293511788352] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/animal/e46231db-aec6-4c0e-8d82-4c0b97e2a826 HTTP/1.1" 200 66
+HTTP GET => 200 , {'id': 'e46231db-aec6-4c0e-8d82-4c0b97e2a826', 'species': 'chicken'}
+HTTP Response Headers:
+    Content-Type : application/json
+    Content-Length : 66
+    Server : Werkzeug/0.15.6 Python/3.6.9
+    Date : Fri, 06 Dec 2019 18:57:33 GMT
+got back: {
+    "id": "e46231db-aec6-4c0e-8d82-4c0b97e2a826",
+    "species": "chicken"
+}
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ ./farm -vi animal del e46231db-aec6-4c0e-8d82-4c0b97e2a826
+Serving static content from /home/alex/Projects/RESTing-with-Flask/02.rest/farm/static ...
+Loading config from farm.cfg ...
+Logging level set to 10 DEBUG
+HTTP DELETE http://127.0.0.1:44444/api/v1/animal/e46231db-aec6-4c0e-8d82-4c0b97e2a826  ...
+20191206.105758.914 [10] [139812748801856] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
+20191206.105758.916 [10] [139812748801856] connectionpool.py:396 http://127.0.0.1:44444 "DELETE /api/v1/animal/e46231db-aec6-4c0e-8d82-4c0b97e2a826 HTTP/1.1" 200 3
+HTTP DELETE => 200 , {}
+HTTP Response Headers:
+    Content-Type : application/json
+    Content-Length : 3
+    Server : Werkzeug/0.15.6 Python/3.6.9
+    Date : Fri, 06 Dec 2019 18:57:58 GMT
 got back: {}
-
 ```
 
 ## Testing Farm

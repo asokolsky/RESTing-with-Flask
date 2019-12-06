@@ -1,7 +1,6 @@
-import sys
-from flask import jsonify, request, url_for
+from datetime import timedelta
+from flask import jsonify, request, url_for, make_response
 from json import dumps
-import datetime
 
 from . import app, log
 from . import dataset
@@ -35,13 +34,14 @@ def api_animals():
                 '_href' : url_for('api_animal', id=id),
             }
             res.append(elt)
-        return jsonify(res)
+        resp = make_response( jsonify(res), 200 )
+        resp.headers['X-Total-Count'] = len(res)
+        return resp
 
     assert request.method == 'POST'
     # create a new animal from the POSTed data
     rd = request.get_json(force=True, silent=True) # , cache=False
     log.info('/api/v1/animal POST %s', str(rd))
-    #print('/api/v1/animal POST', str(rd), file=sys.stderr)
     if rd is None:
         return error409('Request must be a JSON')
 
@@ -57,8 +57,10 @@ def api_animals():
         'id' : id,
         '_href' : url_for('api_animal', id=id),
     }
-    return jsonify(elt), 201
-
+    resp = make_response( jsonify(elt), 201 )
+    resp.headers['Location'] = url_for('api_animal', id=id, _external=True)
+    return resp
+    
 @app.route('/api/v1/animal/<id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])
 def api_animal(id):
     dat = dataset.theAnimals.get(id)
@@ -89,7 +91,7 @@ def api_conf():
             # keep the secret secret
             continue
         log.debug("%s:%s", k, v)
-        if(isinstance(v, datetime.timedelta)):
+        if(isinstance(v, timedelta)):
             # this type crashes jsonify
             v = str(v)
         res[ k ] = v
