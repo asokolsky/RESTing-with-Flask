@@ -1,5 +1,6 @@
+import datetime
 import sys
-from flask import jsonify, request, url_for
+from flask import jsonify, request, url_for, make_response
 from json import dumps
 from schema import (
     Schema,
@@ -42,7 +43,9 @@ def api_animals():
                 '_href' : url_for('api_animal', id=id),
             }
             res.append(elt)
-        return jsonify(res)
+        resp = make_response( jsonify(res), 200 )
+        resp.headers['X-Total-Count'] = len(res)
+        return resp
 
     assert request.method == 'POST'
     # create a new animal from the POSTed data
@@ -64,7 +67,10 @@ def api_animals():
                 'id' : id,
                 '_href' : url_for('api_animal', id=id),
             }
-            return jsonify(elt), 201
+            resp = make_response( jsonify(elt), 201 )
+            resp.headers['Location'] = url_for('api_animal', id=id,
+                        _external=True)
+            return resp
 
     except SchemaError as err:
             return error409('Request data error: ' + str(err))

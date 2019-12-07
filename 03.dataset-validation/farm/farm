@@ -10,18 +10,15 @@
 #   ./farm animal -h
 #   ./farm stress -h
 #
-import sys
-from time import process_time
-from os import getpid
 from argparse import ArgumentParser
 from json import dumps, loads, JSONDecodeError
-from uuid import uuid4 
-from multiprocessing import Pool
-import logging
 from logging import getLogger, CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+from multiprocessing import Pool
+from os import getpid
+from time import process_time
+from uuid import uuid4 
 
-from app import app, log, create_app
-
+from app import app, log, create_app, init_app
 from restc import rest_client
 
 def farm_stub( options ):
@@ -37,18 +34,24 @@ def farm_start( options ):
     Called when user executes, e.g.
     ./farm -c farm.cfg start
     '''
-    from app import app, create_app, init_app
 
+    print('Starting farm pid', str(getpid()))
     app = create_app(options.config)
+    iface = app.config.get('FARM_IF')
+    port = int(app.config.get('FARM_PORT'))
     init_app(app)
     try:
         app.run(
-            host=app.config.get('FARM_IF'),
-            port=int(app.config.get('FARM_PORT')),
+            host=iface,
+            port=port,
             threaded=True,
             processes=1)
+    except KeyboardInterrupt:
+        print( 'Ctrl-C caught in farm start, aborting.', file=stderr )
+
     except Exception as e:
         print('Failed to start farm: ', str(e))
+
     return
 
 def build_client(options):
@@ -56,12 +59,11 @@ def build_client(options):
     Load config file and build an instance of rest_client
     Returns a rest_client
     '''
-    from app import app, create_app
 
     app = create_app(options.config)
     iface = app.config.get('FARM_IF')
     port = app.config.get('FARM_PORT')
-    return rest_client(iface, port, options.verbose)
+    return rest_client(iface, port, options.verbose, options.include)
 
 def farm_get( options ):
     '''
@@ -94,7 +96,6 @@ def farm_post( options ):
         #if id is None:
         da['id'] = str(uuid4())
         (status_code, rdata) = cl.post(options.uri, da)
-        #print('HTTP status code:', status_code)
         print('got back:', dumps(rdata, indent=4))
 
     except JSONDecodeError:
@@ -182,7 +183,7 @@ def farm_animal( options ):
 
     return
 
-def farm_stressor( iface, port, verbose ):
+def farm_stressor( iface, port, verbose, incHeaders ):
     '''
     Stress the farm running at iface:port
     '''
@@ -194,7 +195,7 @@ def farm_stressor( iface, port, verbose ):
     #        print(getpid(), 'Logging level set to', iLevel, level)
     #        log.setLevel(iLevel)
 
-    cl = rest_client(iface, port, verbose)
+    cl = rest_client(iface, port, verbose, incHeaders)
     # any animals out there to stress?
     ans = animal_get(cl, 'all')
     if( len(ans) == 0 ):
@@ -231,11 +232,12 @@ def farm_stress( options ):
     iface = app.config.get('FARM_IF')
     port = app.config.get('FARM_PORT')
     verbose = options.verbose
+    incHeaders = options.include
     processes = options.processes
 
     p = Pool( processes )
     try:
-        p.starmap( farm_stressor, [(iface, port, verbose)] * processes )
+        p.starmap( farm_stressor, [(iface, port, verbose, incHeaders)] * processes )
         p.close()
         p.join()
 
@@ -267,6 +269,12 @@ ap.add_argument(
     action='store_true',
     default=False,
     help = 'Tell more about what is going on')
+ap.add_argument(
+    '-i',
+    '--include',
+    action='store_true',
+    default=False,
+    help = 'Include protocol headers in the output.')        
 ap.set_defaults( func = farm_stub )
 
 # start adding sub-commands

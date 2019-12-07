@@ -7,12 +7,12 @@
 #   ./farm start -h
 #   ./farm get -h
 #   ./farm post -h
+#   ./farm animal -h
 #
-
-from sys import exit, stderr
-from os import getpid
 from argparse import ArgumentParser
 from json import dumps, loads, JSONDecodeError
+from os import getpid
+from sys import exit, stderr
 from uuid import uuid4 
 
 from app import app, create_app, init_app
@@ -36,7 +36,6 @@ def farm_start( options ):
     app = create_app(options.config)
     iface = app.config.get('FARM_IF')
     port = int(app.config.get('FARM_PORT'))
-
     init_app(app)
     try:
         app.run(
@@ -51,7 +50,6 @@ def farm_start( options ):
     except Exception as e:
         print( 'Failed to start farm:', str(e), file=stderr )
 
-    exit( 1 )
     return
 
 def build_client(options):
@@ -96,7 +94,6 @@ def farm_post( options ):
         #if id is None:
         da['id'] = str(uuid4())
         (status_code, rdata) = cl.post(options.uri, da)
-        #print('HTTP status code:', status_code)
         print('got back:', dumps(rdata, indent=4))
 
     except JSONDecodeError:

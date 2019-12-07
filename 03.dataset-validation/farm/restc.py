@@ -10,7 +10,7 @@ class rest_client:
     authentication information. No that this is important.  At least not yet.
     '''
 
-    def __init__(self, siface, sport, verbose):
+    def __init__(self, siface, sport, verbose, dumpHeaders):
         '''
         In:
         siface - server interface, or host name
@@ -18,6 +18,7 @@ class rest_client:
         '''
         self.base_url = 'http://' + siface + ':' + str(sport)
         self.verbose = verbose
+        self.dumpHeaders = dumpHeaders
         self.ses = Session()
         return
 
@@ -26,7 +27,24 @@ class rest_client:
         Close the underlying TCP connection
         '''
         self.ses.close()
-        return        
+        return
+
+    def print_req(self, method, url, data):
+        if not self.verbose:
+            return
+        if data is None:
+            data = ''
+        print('HTTP', method, url, data, '...')
+        return
+
+    def print_resp(self, method, resp):
+        if self.verbose:
+            print('HTTP', method, '=>', resp.status_code, ',', str(resp.json()))
+        if self.dumpHeaders:
+            print('HTTP Response Headers:')
+            for h in resp.headers:
+                print('   ', h, ':', resp.headers[h])
+        return
 
     def get(self, uri):
         '''
@@ -35,11 +53,9 @@ class rest_client:
         Throws requests.exceptions.ConnectionError when connection fails
         '''
         url = urljoin(self.base_url, uri)
-        if self.verbose:
-            print('HTTP GET', url, '...')
+        self.print_req('GET', url, None)
         resp = self.ses.get(url)
-        if self.verbose:
-            print('HTTP GET =>', resp.status_code, ',', str(resp.json()))
+        self.print_resp('GET', resp)
         return (resp.status_code, resp.json())
 
     def post(self, uri, pdata):
@@ -49,11 +65,9 @@ class rest_client:
         Throws requests.exceptions.ConnectionError when connection fails
         '''
         url = urljoin(self.base_url, uri)
-        if self.verbose:
-            print('HTTP POST', url, str(pdata))
+        self.print_req('POST', url, pdata)
         resp = self.ses.post(url, json=pdata)
-        if self.verbose:
-            print('HTTP POST =>', resp.status_code, ',', str(resp.json()))
+        self.print_resp('POST', resp)
         return (resp.status_code, resp.json())
 
     def delete(self, uri):
@@ -63,11 +77,9 @@ class rest_client:
         Throws requests.exceptions.ConnectionError when connection fails
         '''
         url = urljoin(self.base_url, uri)
-        if self.verbose:
-            print('HTTP DELETE', url, '...')
+        self.print_req('DELETE', url, None)
         resp = self.ses.delete(url)
-        if self.verbose:
-            print('HTTP DELETE =>', resp.status_code, ',', str(resp.json()))
+        self.print_resp('DELETE', resp)
         return (resp.status_code, resp.json())
 
     def put(self, uri, pdata):
@@ -77,11 +89,9 @@ class rest_client:
         Throws requests.exceptions.ConnectionError when connection fails
         '''
         url = urljoin(self.base_url, uri)
-        if self.verbose:
-            print('HTTP PUT', url, str(pdata))
+        self.print_req('PUT', url, pdata)
         resp = self.ses.put(url, json=pdata)
-        if self.verbose:
-            print('HTTP PUT =>', resp.status_code, ',', str(resp.json()))
+        self.print_resp('PUT', resp)
         return (resp.status_code, resp.json())
 
     def patch(self, uri, pdata):
@@ -91,9 +101,7 @@ class rest_client:
         Throws requests.exceptions.ConnectionError when connection fails
         '''
         url = urljoin(self.base_url, uri)
-        if self.verbose:
-            print('HTTP PATCH', url, str(pdata))
+        self.print_req('PATCH', url, pdata)
         resp = self.ses.patch(url, json=pdata)
-        if self.verbose:
-            print('HTTP PATCH =>', resp.status_code, ',', str(resp.json()))
+        self.print_resp('PATCH', resp)
         return (resp.status_code, resp.json())
