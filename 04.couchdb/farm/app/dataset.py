@@ -1,11 +1,21 @@
 # For relative imports to work in Python 3.6
-import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+#import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 from requests import Session
 from abc import ABC, abstractmethod 
 from farm_schema import AnimalSchema
 
-from app import log
+import os
+import sys
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+
+from app.logger import log
+#from logger import log
+#from . import log
+#assert log is not None
+
 
 class DataSet(ABC):
     '''
@@ -32,7 +42,7 @@ class DataSet(ABC):
     def put(self, id, dat):
         '''
         Stores data into the dataset
-        Returns:
+        Returns:<
             True if dat is validated against schema and is added to the dataset
             False otherwise
         May throw:
@@ -139,6 +149,7 @@ class DataSetCouchDB(DataSet):
         #
         url = self.url + '/' + self.db_name
         resp = self.ses.head(url)
+
         log.info('ses.head(%s) => %d', url, resp.status_code)
         if(resp.status_code == 404):
             #
