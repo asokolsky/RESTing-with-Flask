@@ -99,7 +99,7 @@ nav {
 main {
     grid-row: 2;
     grid-column: 2 / 3;
-    padding: 0 20px;
+    padding: 0 120px;
 }
 aside {
     grid-row: 2;

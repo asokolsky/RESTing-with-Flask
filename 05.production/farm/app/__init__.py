@@ -16,7 +16,7 @@ from flask import Flask
 
 from .metrics import setup_metrics
 
-__version__='2019.11.23'
+__version__='2019.12.08'
 
 # main application
 app = Flask(
