@@ -49,7 +49,7 @@ def farm_start( options ):
             processes=1)
 
     except KeyboardInterrupt:
-        #print( "Ctrl-C caught in farm start, aborting.", file=stderr)
+        print( "Ctrl-C caught in farm start, aborting.", file=stderr)
         pass
 
     except Exception as e:
@@ -336,7 +336,7 @@ scp_stress.add_argument(
     Defaults to 1''')
 scp_stress.set_defaults( func = farm_stress )
 
-# finally, parse the command linex
+# finally, parse the command line
 pargs = ap.parse_args()
 try:
     pargs.func( pargs )

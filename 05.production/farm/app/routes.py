@@ -43,7 +43,9 @@ def api_animals():
                 '_href' : url_for('api_animal', id=id),
             }
             res.append(elt)
-        return jsonify(res)
+        resp = make_response( jsonify(res), 200 )
+        resp.headers['X-Total-Count'] = len(res)
+        return resp
 
     assert request.method == 'POST'
     # create a new animal from the POSTed data
@@ -65,7 +67,9 @@ def api_animals():
                 'id' : id,
                 '_href' : url_for('api_animal', id=id),
             }
-            return jsonify(elt), 201
+            resp = make_response( jsonify(elt), 201 )
+            resp.headers['Location'] = url_for('api_animal', id=id, _external=True)
+            return resp
 
     except SchemaError as err:
             return error409('Request data error: ' + str(err))
@@ -103,15 +107,19 @@ def api_about():
     }
     return jsonify(dat)
 
-@app.route('/api/v1/_config', methods=['GET'])
-def api_config():
-    dat = { }
+@app.route('/api/v1/_conf', methods=['GET'])
+def api_conf():
+    res = {} 
     for k,v in app.config.items():
-        if isinstance( v, timedelta):
+        if(k == 'SECRET_KEY'):
+            # keep the secret secret
+            continue
+        log.debug("%s:%s", k, v)
+        if(isinstance(v, datetime.timedelta)):
+            # this type crashes jsonify
             v = str(v)
-        dat[ k ] = v
-
-    return jsonify(dat)
+        res[ k ] = v
+    return jsonify(res)
 
 @app.route('/api/v1/metrics', methods=['GET'])
 def api_metrics():

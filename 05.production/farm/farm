@@ -8,10 +8,14 @@
 #   ./farm get -h
 #   ./farm post -h
 #   ./farm animal -h
+#   ./farm stress -h
 #
-import sys
 from argparse import ArgumentParser
 from json import dumps, loads, JSONDecodeError
+from multiprocessing import Pool
+from os import getpid
+from sys import exit, stderr
+from time import process_time
 from uuid import uuid4 
 
 from app import app_configure, app_initialize, __version__
@@ -43,6 +47,9 @@ def farm_start( options ):
     port = int(app.config.get('FARM_PORT'))
     try:
         app.run(host=iface, port=port)
+    except KeyboardInterrupt:
+        print( "Ctrl-C caught in farm start, aborting.", file=stderr)
+        pass
     except Exception as e:
         print('Failed to start farm: ', str(e))
     return
@@ -56,7 +63,7 @@ def build_client(options):
     app = app_configure(options.config)
     iface = app.config.get('FARM_IF')
     port = app.config.get('FARM_PORT')
-    return rest_client(iface, port, options.verbose)
+    return rest_client(iface, port, options.verbose, options.include)
 
 def farm_get( options ):
     '''
@@ -100,63 +107,65 @@ def farm_post( options ):
 
     return
 
+def animal_new(cl, data, n):
+    '''
+    Try to create a new animal.        
+    In: data should be a meaningful JSON
+    '''
+
+    for i in range(0, n):
+        da = loads(data)
+        id = da.get('id', None)
+        if id is None:
+            da['id'] = str(uuid4())
+        (status_code, rdata) = cl.post('/api/v1/animal', da)
+        #print('HTTP status code:', status_code)
+        print('got back:', dumps(rdata, indent=4))
+        if status_code != 201:
+            break
+    return
+
+def animal_get(cl, data):
+    '''
+    Retrieve an animal record.
+    In: data should be ID
+    '''
+    if data == 'all':
+        uri = '/api/v1/animal'
+    else:
+        uri = '/api/v1/animal/' + data
+    (status_code, rdata) = cl.get(uri)
+    print('got back:', dumps(rdata, indent=4))
+    return rdata
+
+def animal_del(cl, data):
+    '''
+    Delete an animal record.
+    In: data should be ID
+    '''
+
+    if data == 'all':
+        animal_del_all(cl)
+        return
+
+    (status_code, rdata) = cl.delete('/api/v1/animal/' + data)
+    print('got back:', dumps(rdata, indent=4))
+    return
+
+def animal_del_all(cl):
+    '''
+    Delete all the known animals!    
+    '''
+    adata = animal_get(cl, 'all')
+    for a in adata:
+        id = a.get('id')
+        animal_del(cl, id)
+    return
+
 def farm_animal( options ):
     '''
     Called when user executes ./farm animal
     '''
-    def animal_new(cl, data, n):
-        '''
-        Try to create a new animal.
-        In: data should be a meaningful JSON
-        '''
-        for i in range(0, n):
-            da = loads(data)
-            id = da.get('id', None)
-            if id is None:
-                da['id'] = str(uuid4())
-            (status_code, rdata) = cl.post('/api/v1/animal', da)
-            #print('HTTP status code:', status_code)
-            print('got back:', dumps(rdata, indent=4))
-            if status_code != 201:
-                break
-        return
-
-    def animal_get(cl, data):
-        '''
-        Retrieve an animal record.
-        In: data should be ID
-        '''
-        if data == 'all':
-            uri = '/api/v1/animal'
-        else:
-            uri = '/api/v1/animal/' + data
-        (status_code, rdata) = cl.get(uri)
-        print('got back:', dumps(rdata, indent=4))
-        return rdata
-
-    def animal_del(cl, data):
-        '''
-        Delete an animal record.
-        In: data should be ID
-        '''
-        if data == 'all':
-            animal_del_all(cl)
-            return
-
-        (status_code, rdata) = cl.delete('/api/v1/animal/' + data)
-        print('got back:', dumps(rdata, indent=4))
-        return
-
-    def animal_del_all(cl):
-        '''
-        Delete all the known animals!
-        '''
-        adata = animal_get(cl, 'all')
-        for a in adata:
-            print(a)
-            id = a.get('id')
-            animal_del(cl, id)
-        return
 
     cl = build_client(options)
     try:
@@ -176,6 +185,76 @@ def farm_animal( options ):
 
     return
 
+def farm_stressor( iface, port, verbose, incHeaders ):
+    '''
+    Stress the farm running at iface:port
+    '''
+    #global log
+    #if(log is not None):
+    #    level = 'WARNING'
+    #    iLevel = getattr(logging, str(level), INFO)
+    #    if isinstance(iLevel, int):
+    #        print(getpid(), 'Logging level set to', iLevel, level)
+    #        log.setLevel(iLevel)
+
+    cl = rest_client(iface, port, verbose, incHeaders)
+    # any animals out there to stress?
+    ans = animal_get(cl, 'all')
+    if( len(ans) == 0 ):
+        # if not - create one
+        animal_new(cl, '{"species": "chicken", "sex": "female"}', 100)
+    ans = animal_get(cl, 'all')
+    if( len(ans) == 0 ):
+        return
+    # we got an animal to stress - hopefully the same for all the stressors
+    id = ans[0]['id']
+    print(getpid(), 'animal id to stress', id)
+
+    pt1 = process_time()
+    uri = '/api/v1/animal/' + id
+    data = {"species": "chicken", "sex": "female"}
+    for i in range(0, 1000):
+        if(data['sex'] == 'female'):
+            data['sex'] = 'male'
+        else:
+            data['sex'] = 'female'
+        (status_code, rdata) = cl.put(uri, data)
+        #print('got back:', status_code, dumps(rdata, indent=4))
+    pt2 = process_time()
+    #print(getpid(), 'animal id to stress', id)
+
+    return
+
+def farm_stress( options ):
+    '''
+    Stress the farm server
+    '''
+
+    app = create_app(options.config)
+    iface = app.config.get('FARM_IF')
+    port = app.config.get('FARM_PORT')
+    verbose = options.verbose
+    incHeaders = options.include
+    processes = options.processes
+
+    p = Pool( processes )
+    try:
+        p.starmap( farm_stressor, [(iface, port, verbose, incHeaders)] * processes )
+        p.close()
+        p.join()
+
+    except KeyboardInterrupt:
+        print( 'farm_stress caught KeyboardInterrupt' )
+        pass
+    except Exception as e:
+        print( 'farm_stress caught:', str( e ) )
+    finally:
+        print( 'farm_stress finalized' )
+        pass
+
+    return
+
+
 #
 # argument parser
 #
@@ -193,6 +272,12 @@ ap.add_argument(
     action='store_true',
     default=False,
     help = 'Tell more about what is going on')
+ap.add_argument(
+    '-i',
+    '--include',
+    action='store_true',
+    default=False,
+    help = 'Include protocol headers in the output.')        
 ap.add_argument(
     '-V',
     '--version',
@@ -244,7 +329,18 @@ scp_animal.add_argument(
     help = 'Animal data. Must be JSON for new (ID will be added) or animal ID for other commands or "all".')
 scp_animal.set_defaults( func = farm_animal )
 
-# finally, parse the command linex
+help = 'Stress the farm'
+scp_stress = scp.add_parser('stress', description = help, help = help)
+scp_stress.add_argument(
+    '-p',
+    '--processes',
+    type=int,
+    default=1,
+    help = '''Use this many stress client processes to stress a farm server.
+    Defaults to 1''')
+scp_stress.set_defaults( func = farm_stress )
+
+# finally, parse the command line
 pargs = ap.parse_args()
 try:
     pargs.func( pargs )

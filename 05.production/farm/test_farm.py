@@ -12,7 +12,7 @@ import random
 from uuid import uuid4 
 from json import loads
 
-from app import init_app
+from app import app_configure, app_initialize
 
 def get_random(ar):
     return ar[random.randint(0, len(ar)-1)]
@@ -26,10 +26,10 @@ class TestFarm(unittest.TestCase):
         '''
         random.seed()
 
-        app = init_app('farm_test.cfg')
-
+        app = app_configure('farm_test.cfg')
         app.config['TESTING'] = True
         app.config['DEBUG'] = False
+        app_initialize()
         #
         # This is important!
         # we will be using a test FLASK client

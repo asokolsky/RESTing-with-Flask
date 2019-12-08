@@ -2,7 +2,16 @@ from requests import Session
 from abc import ABC, abstractmethod 
 from farm_schema import AnimalSchema
 
-from . import log
+# For relative imports to work in Python 3.6
+#import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+import os
+import sys
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+
+from app import log
+assert log is not None
 
 class DataSet(ABC):
     '''
@@ -105,8 +114,7 @@ class DataSetRAM(DataSet):
         Removes the record identified by id from the dataset.
         Returns the data (if found) or None.
         '''
-        self.data.pop(id, None)
-        pass
+        return self.data.pop(id, None)
 
     def ids(self):
         '''

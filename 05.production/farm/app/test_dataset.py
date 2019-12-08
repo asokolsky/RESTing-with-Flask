@@ -12,7 +12,7 @@ from schema import (
     #Use,
 )
 
-from dataset import DataSet
+from dataset import DataSetRAM
 
 # create benign Schema
 NoSchema = Schema(object)
@@ -23,7 +23,7 @@ class TestDataset(unittest.TestCase):
         '''
         Executed prior to each test.
         '''
-        self.ds = DataSet('test', NoSchema)
+        self.ds = DataSetRAM('test', NoSchema)
         return
 
     def tearDown(self):
