@@ -7,17 +7,17 @@
 
 import unittest
 from schema import (
-    And,
-    Const,
-    Optional,
-    Or,
-    Regex,
-    Schema,
+    #And,
+    #Const,
+    #Optional,
+    #Or,
+    #Regex,
+    #Schema,
     SchemaError,
-    Use,
+    #Use,
 )
 
-from farm_schema import AnimalSchema, SchemaEnumError
+from farm_schema import AnimalSchema
 
 class TestFarmSchema(unittest.TestCase):
 

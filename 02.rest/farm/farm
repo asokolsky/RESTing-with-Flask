@@ -121,6 +121,8 @@ def farm_animal( options ):
             (status_code, rdata) = cl.post('/api/v1/animal', da)
             #print('HTTP status code:', status_code)
             print('got back:', dumps(rdata, indent=4))
+            if status_code != 201:
+                break
         return
 
     def animal_get(cl, data):

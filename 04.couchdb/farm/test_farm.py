@@ -39,7 +39,6 @@ class TestFarm(unittest.TestCase):
         app.testing = True
         self.app = app.test_client()
         self.assertEqual(app.debug, False)
-
         return
 
     def tearDown(self):

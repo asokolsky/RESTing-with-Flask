@@ -103,7 +103,7 @@ def api_animal(id):
         nid = rd.get('id', None)
         if nid is None:
             rd['id'] = id
-        elif(nid == rd['id']):
+        elif nid == rd['id']:
             pass
         else:
             return error409('Conflict: URI id vs request id')
@@ -114,7 +114,7 @@ def api_animal(id):
                     'id' : id,
                     '_href' : url_for('api_animal', id=id),
                 }
-                return jsonify(elt), 200
+                return jsonify(elt)
 
         except SchemaError as err:
                 return error409('Request data error: ' + str(err))
@@ -123,3 +123,17 @@ def api_animal(id):
 
     assert request.method == 'PATCH'
     return error400('Not implemented yet')
+
+@app.route('/api/v1/_conf', methods=['GET'])
+def api_conf():
+    res = {} 
+    for k,v in app.config.items():
+        if(k == 'SECRET_KEY'):
+            # keep the secret secret
+            continue
+        log.debug("%s:%s", k, v)
+        if(isinstance(v, datetime.timedelta)):
+            # this type crashes jsonify
+            v = str(v)
+        res[ k ] = v
+    return jsonify(res)

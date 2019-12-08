@@ -15,6 +15,7 @@ from json import dumps, loads, JSONDecodeError
 from logging import getLogger, CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
 from multiprocessing import Pool
 from os import getpid
+from sys import stderr
 from time import process_time
 from uuid import uuid4 
 
@@ -46,6 +47,7 @@ def farm_start( options ):
             port=port,
             threaded=True,
             processes=1)
+            
     except KeyboardInterrupt:
         print( 'Ctrl-C caught in farm start, aborting.', file=stderr )
 
@@ -108,7 +110,7 @@ def farm_post( options ):
 
 def animal_new(cl, data, n):
     '''
-    Try to create a new animal.
+    Try to create a new animal.        
     In: data should be a meaningful JSON
     '''
     for i in range(0, n):
@@ -118,7 +120,7 @@ def animal_new(cl, data, n):
             da['id'] = str(uuid4())
         (status_code, rdata) = cl.post('/api/v1/animal', da)
         #print('HTTP status code:', status_code)
-        #print('got back:', dumps(rdata, indent=4))
+        print('got back:', dumps(rdata, indent=4))
         if status_code != 201:
             break
     return
@@ -141,6 +143,7 @@ def animal_del(cl, data):
     Delete an animal record.
     In: data should be ID
     '''
+
     if data == 'all':
         animal_del_all(cl)
         return
@@ -151,11 +154,10 @@ def animal_del(cl, data):
 
 def animal_del_all(cl):
     '''
-    Delete all the known animals!
+    Delete all the known animals!    
     '''
     adata = animal_get(cl, 'all')
     for a in adata:
-        print(a)
         id = a.get('id')
         animal_del(cl, id)
     return

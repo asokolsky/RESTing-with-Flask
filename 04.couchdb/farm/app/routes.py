@@ -1,13 +1,13 @@
-import sys
-from flask import jsonify, request, url_for
+import datetime
+from flask import jsonify, request, url_for, make_response
 from json import dumps
 from schema import (
-    Schema,
+    #Schema,
     SchemaError,
-    SchemaForbiddenKeyError,
-    SchemaMissingKeyError,
-    SchemaUnexpectedTypeError,
-    SchemaWrongKeyError,
+    #SchemaForbiddenKeyError,
+    #SchemaMissingKeyError,
+    #SchemaUnexpectedTypeError,
+    #SchemaWrongKeyError,
 )
 
 from . import app, log
@@ -42,7 +42,9 @@ def api_animals():
                 '_href' : url_for('api_animal', id=id),
             }
             res.append(elt)
-        return jsonify(res)
+        resp = make_response( jsonify(res), 200 )
+        resp.headers['X-Total-Count'] = len(res)
+        return resp
 
     assert request.method == 'POST'
     # create a new animal from the POSTed data
@@ -65,7 +67,10 @@ def api_animals():
                 'id' : id,
                 '_href' : url_for('api_animal', id=id),
             }
-            return jsonify(elt), 201
+            resp = make_response( jsonify(elt), 201 )
+            resp.headers['Location'] = url_for('api_animal', id=id,
+                _external=True)
+            return resp
 
     except SchemaError as err:
             return error409('Request data error: ' + str(err))
@@ -89,8 +94,46 @@ def api_animal(id):
         res = {}
         return jsonify(res)
 
+    rd = request.get_json(force=True, silent=True) # , cache=False
+    log.info('/api/v1/animal/%s %s %s', id, request.method, str(rd))
+    if rd is None:
+        return error409('Request must be a JSON')
+
     if request.method == 'PUT':
-        return error400('Not implemented yet')
+        nid = rd.get('id', None)
+        if nid is None:
+            rd['id'] = id
+        elif nid == rd['id']:
+            pass
+        else:
+            return error409('Conflict: URI id vs request id')
+
+        try:
+            if dataset.theAnimals.put(id, rd):
+                elt = { 
+                    'id' : id,
+                    '_href' : url_for('api_animal', id=id),
+                }
+                return jsonify(elt)
+
+        except SchemaError as err:
+                return error409('Request data error: ' + str(err))
+
+        return error409('Request data validation failed')
 
     assert request.method == 'PATCH'
     return error400('Not implemented yet')
+
+@app.route('/api/v1/_conf', methods=['GET'])
+def api_conf():
+    res = {} 
+    for k,v in app.config.items():
+        if(k == 'SECRET_KEY'):
+            # keep the secret secret
+            continue
+        log.debug("%s:%s", k, v)
+        if(isinstance(v, datetime.timedelta)):
+            # this type crashes jsonify
+            v = str(v)
+        res[ k ] = v
+    return jsonify(res)

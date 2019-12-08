@@ -1,8 +1,11 @@
+# For relative imports to work in Python 3.6
+import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
 from requests import Session
 from abc import ABC, abstractmethod 
 from farm_schema import AnimalSchema
 
-from . import app, log
+from app import log
 
 class DataSet(ABC):
     '''
@@ -105,8 +108,7 @@ class DataSetRAM(DataSet):
         Removes the record identified by id from the dataset.
         Returns the data (if found) or None.
         '''
-        self.data.pop(id, None)
-        pass
+        return self.data.pop(id, None)
 
     def ids(self):
         '''

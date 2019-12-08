@@ -24,9 +24,9 @@ class TestRestC(unittest.TestCase):
         '''
         iface = 'httpbin.org'
         port = 80
-        verbose = True
-        self.cl = restc.rest_client(iface, port, verbose)
-        
+        verbose = False
+        dumpHeaders = False
+        self.cl = restc.rest_client(iface, port, verbose, dumpHeaders)
         return
 
     def tearDown(self):

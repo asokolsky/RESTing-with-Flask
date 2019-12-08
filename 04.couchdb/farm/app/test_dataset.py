@@ -4,15 +4,16 @@
 # Launch it by issuing:
 #  python3 -m unittest test_dataset -v
 #
+import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 import unittest
 from schema import (
     Schema,
-    SchemaError,
-    Use,
+    #SchemaError,
+    #Use,
 )
 
-from dataset import DataSet
+from dataset import DataSetRAM
 
 # create benign Schema
 NoSchema = Schema(object)
@@ -23,7 +24,7 @@ class TestDataset(unittest.TestCase):
         '''
         Executed prior to each test.
         '''
-        self.ds = DataSet('test', NoSchema)
+        self.ds = DataSetRAM('test', NoSchema)
         return
 
     def tearDown(self):
