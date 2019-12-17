@@ -35,6 +35,7 @@ def not_found(e):
 def api_animals():
     if request.method == 'GET':
         # get all the animals
+        # request may have params like ?page=2&per_page=100
         res = []
         for id in dataset.theAnimals.ids():
             elt = { 
