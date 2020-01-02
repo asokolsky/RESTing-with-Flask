@@ -1,5 +1,7 @@
-from requests import Session
 from abc import ABC, abstractmethod 
+from requests import Session
+from urllib.parse import urljoin
+
 from farm_schema import AnimalSchema
 
 # For relative imports to work in Python 3.6
@@ -35,6 +37,29 @@ class DataSet(ABC):
         Access the record by id
         '''
         pass
+
+    def get_page(self, page, per_page, foo):
+        '''
+        Given the iterator, form a page # page consisting of per_page records.
+        Every record is formed using foo.
+        Default behavior is dumb.  A paging-supporting backend,
+        e.g. CouchDB can improve on it.
+        Returns tuple (total#of_records_in_db, page of records)
+        '''
+        assert page >= 1
+        assert per_page >= 1
+        skip = (page - 1) * per_page
+        break_at = skip + per_page
+        #log.debug('get_page(page=%d, per_page=%d) skip=%d, break_at=%d', page, per_page, skip, break_at)
+        total = len(self.ids())
+        res = []
+        for i, elt in enumerate(self.ids()):
+            if i < skip:
+                continue
+            elif i >= break_at:
+                break
+            res.append( foo(elt) )       
+        return total, res
 
     def put(self, id, dat):
         '''

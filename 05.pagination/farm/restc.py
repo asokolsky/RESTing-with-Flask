@@ -29,12 +29,14 @@ class rest_client:
         self.ses.close()
         return
 
-    def print_req(self, method, url, data):
+    def print_req(self, method, url, data=None, kwargs=None):
         if not self.verbose:
             return
         if data is None:
             data = ''
         print('HTTP', method, url, data, '...')
+        if kwargs is not None:
+            print(kwargs)
         return
 
     def print_resp(self, method, resp):
@@ -46,15 +48,15 @@ class rest_client:
                 print('   ', h, ':', resp.headers[h])
         return
 
-    def get(self, uri):
+    def get(self, uri, **kwargs):
         '''
         Issue HTTP GET to a base_url + uri
         returns (http_status, response_json)
         Throws requests.exceptions.ConnectionError when connection fails
         '''
         url = urljoin(self.base_url, uri)
-        self.print_req('GET', url, None)
-        resp = self.ses.get(url)
+        self.print_req('GET', url, None, kwargs)
+        resp = self.ses.get(url, **kwargs)
         self.print_resp('GET', resp)
         return (resp.status_code, resp.json())
 
@@ -77,7 +79,7 @@ class rest_client:
         Throws requests.exceptions.ConnectionError when connection fails
         '''
         url = urljoin(self.base_url, uri)
-        self.print_req('DELETE', url, None)
+        self.print_req('DELETE', url)
         resp = self.ses.delete(url)
         self.print_resp('DELETE', resp)
         return (resp.status_code, resp.json())

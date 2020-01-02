@@ -28,23 +28,65 @@ def error400(msg):
 def not_found(e):
     return jsonify(http_status_code=404, text=str(e)), 404
 
+def form_elt( id ):
+    elt = { 
+        'id' : id,
+        '_href' : url_for('api_animal', id=id),
+    }
+    return elt
+
+
+def get_page_args( request ):
+    '''
+    Retreive the pagination arguments.
+    Returns page, per_page
+    '''
+    #log.debug('request.args: %s', str(request.args))
+    page = request.args.get('page', default = 1, type=int)
+    if page <= 0:
+        page = 1
+    per_page = request.args.get('per_page', default = 10, type=int)
+    if per_page < 1:
+        per_page = 1
+    elif per_page > 1000:
+        per_page = 1000
+    return page, per_page
+
 #
 # Animal Collection APIs 
 #
 @app.route('/api/v1/animal', methods=['GET', 'POST'])
 def api_animals():
+
+    def make_link_header(total, page, per_page):
+        last_page = total // per_page
+        if (total % per_page) > 0:
+            last_page += 1
+
+        hdrs = []
+        if page > 1:
+            url = url_for('api_animals',  _external=True, page=1, per_page=per_page)
+            hdrs.append('<'+url+'>; rel="first"')
+            url = url_for('api_animals',  _external=True, page=page-1, per_page=per_page)
+            hdrs.append('<'+url+'>; rel="prev"')
+
+        if page < last_page:
+            url = url_for('api_animals',  _external=True, page=page+1, per_page=per_page)
+            hdrs.append('<'+url+'>; rel="next"')
+            url = url_for('api_animals',  _external=True, page=last_page, per_page=per_page)
+            hdrs.append('<'+url+'>; rel="last"')
+
+        return ', '.join(hdrs)
+
     if request.method == 'GET':
         # get all the animals
         # request may have params like ?page=2&per_page=100
-        res = []
-        for id in dataset.theAnimals.ids():
-            elt = { 
-                'id' : id,
-                '_href' : url_for('api_animal', id=id),
-            }
-            res.append(elt)
-        resp = make_response( jsonify(res), 200 )
-        resp.headers['X-Total-Count'] = len(res)
+        page, per_page = get_page_args( request )
+        total, res = dataset.theAnimals.get_page(page, per_page, form_elt)
+        resp = make_response(jsonify(res), 200)
+        # form headers
+        resp.headers['X-Total-Count'] = total
+        resp.headers['Link'] = make_link_header(total, page, per_page)
         return resp
 
     assert request.method == 'POST'
