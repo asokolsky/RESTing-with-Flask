@@ -131,16 +131,20 @@ def animal_new(cl, data, n):
             break
     return
 
-def animal_get(cl, data):
+def animal_get(cl, data, options):
     '''
     Retrieve an animal record.
     In: data should be ID
     '''
-    if data == 'all':
+    params = {
+        'page': options.page,
+        'per_page': options.per_page
+    }
+    if data == 'all':        
         uri = '/api/v1/animal'
     else:
         uri = '/api/v1/animal/' + data
-    (status_code, rdata) = cl.get(uri)
+    (status_code, rdata) = cl.get(uri, params=params)
     print('got back:', dumps(rdata, indent=4))
     return rdata
 
@@ -179,7 +183,7 @@ def farm_animal( options ):
             if options.action == 'new':
                 animal_new(cl, da, options.num)
             elif options.action == 'get':
-                animal_get(cl, da)
+                animal_get(cl, da, options)
             elif options.action == 'del':
                 animal_del(cl, da)
 
@@ -333,6 +337,16 @@ scp_animal.add_argument(
     default=1,
     help = 'Repeat command this many times. ' + \
         'Defaults to the number of times the data is specified.')
+scp_animal.add_argument(
+    '--page',
+    type=int,
+    default=1,
+    help = '''1-based page number. Defaults to 1''')
+scp_animal.add_argument(
+    '--per-page',
+    type=int,
+    default=10,
+    help = '''Number of records per page. Defaults to 10''')
 scp_animal.add_argument(
     'data',
     nargs='+',

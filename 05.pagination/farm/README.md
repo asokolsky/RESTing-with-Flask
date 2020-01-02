@@ -25,23 +25,9 @@ API](https://developer.github.com/v3/#pagination);
 
 Both approaches are used in the existing REST APIs.  I prefer the former as it
 keeps row data as meta information in the headers.  I find such approach [more
-elegant](https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#pagination).
-
-Our implementation of pagination:
-
-* follows [GitHub API](https://developer.github.com/v3/guides/traversing-with-pagination/).
-* relies on [URI template](https://tools.ietf.org/html/rfc6570) [Python
-library](https://uritemplate.readthedocs.io/en/latest/)
-
-Install uritemplate python library:
-
-```bash
-alex@latitude:~/Projects/RESTing-with-Flask/05.pagination$ pip3 install uritemplate
-Collecting uritemplate
-  Downloading https://files.pythonhosted.org/packages/e5/7d/9d5a640c4f8bf2c8b1afc015e9a9d8de32e13c9016dcc4b0ec03481fb396/uritemplate-3.0.0-py2.py3-none-any.whl
-Installing collected packages: uritemplate
-Successfully installed uritemplate-3.0.0
-```
+elegant](https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#pagination.
+Our implementation of pagination follows [GitHub
+API](https://developer.github.com/v3/guides/traversing-with-pagination/).
 
 ## Queries
 
@@ -51,9 +37,30 @@ pretty limited to very basic queries.
 
 ## Server
 
+All the work on support for pagination and queries is done on the server side -
+see routes.py
+
 ## Client
 
+CLI client improved to:
+
+* support pagination via options --page and --per-page
+* include response headers in the printout via options -i/--include, similar to
+those in curl.
+
 ## Playing with the Farm
+
+```bash
+alex@latitude:~/Projects/RESTing-with-Flask/05.pagination/farm$ ./farm -v -i get --page=3 --per-page=5 /api/v1/animal
+alex@latitude:~/Projects/RESTing-with-Flask/05.pagination/farm$ ./farm -v -i animal get --page=2 --per-page=3 all
+```
+
+Observe:
+
+* response being limited to the number of animals as in per-page
+* you can paginate by providing different values for --page
+* header X-Total-Count informing the client about the total number of animals.
+* header Link offering URLs which client can use to build a paginating GUI.
 
 ## Testing Farm
 
