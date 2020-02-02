@@ -28,6 +28,8 @@ keeps row data as meta information in the headers.  I find such approach [more
 elegant](https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#pagination.
 Our implementation of pagination follows [GitHub
 API](https://developer.github.com/v3/guides/traversing-with-pagination/).
+The alternative header-based approach to pagination [relies on
+Range header](http://otac0n.com/blog/2012/11/21/range-header-i-choose-you.html). 
 
 ## Queries
 
@@ -57,10 +59,11 @@ alex@latitude:~/Projects/RESTing-with-Flask/05.pagination/farm$ ./farm -v -i ani
 
 Observe:
 
-* response being limited to the number of animals as in per-page
-* you can paginate by providing different values for --page
-* header X-Total-Count informing the client about the total number of animals.
-* header Link offering URLs which client can use to build a paginating GUI.
+* response is limited to the number of collection elements as specified in
+per-page;
+* you can paginate by providing different values for --page;
+* header X-Total-Count specifies the total number of elements in the
+collection;
+* header Link offers URLs for the client to build a paginating GUI.
 
 ## Testing Farm
-
