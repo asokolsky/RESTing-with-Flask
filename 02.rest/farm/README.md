@@ -20,17 +20,53 @@ Here is a decent [primer on flask logging](https://www.scalyr.com/blog/getting-s
 
 ## Client
 
-Module [restc.py](restc.py) has python implementation of HTTP client.  It relies on session
-(as opposed to request object) in order to maintain context between the calls. 
-This is important not only for performance reasons (no need to re-establish TCP
-connection) but later will make possible client login.
+Module [restc.py](restc.py) has python implementation of HTTP client.  It
+relies on a session (as opposed to request object) in order to maintain context
+between the calls.  This is important not only for performance reasons (no need
+to re-establish TCP connection) but later will make possible client login.
 
 Farm python client now supports HTTP POST.  Along with the previously
 implemented GET those two constitute a low level farm actions.  Moreover, farm
 python client now adds high level actions for animal collection:
 
 ```bash
-farm animal new|get|del
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ ./farm -h
+usage: farm [-h] [-c CONFIG] [-v] [-i] {start,get,post,animal} ...
+
+Farm REST API server.
+
+positional arguments:
+  {start,get,post,animal}
+                        Farm sub-commands
+    start               Start Farm REST API development server. Not for
+                        production use.
+    get                 Issue GET request to the farm server.
+    post                Issue POST request to the farm server.
+    animal              Issue animal commands to the farm server.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CONFIG, --config CONFIG
+                        Load configuration from CONFIG, defaults to farm.cfg
+  -v, --verbose         Tell more about what is going on
+  -i, --include         Include protocol headers in the output.
+
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ ./farm animal -h
+usage: farm animal [-h] [-n NUM] {new,get,del} data [data ...]
+
+Issue animal commands.
+
+positional arguments:
+  {new,get,del}      Animal command, determines how data argument is
+                     interpreted.
+  data               Animal data. Must be JSON for new (ID will be added) or
+                     animal ID for the other commands.
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -n NUM, --num NUM  Repeat command this many times. Defaults to the number of
+                     times the data is specified.
+
 ```
 
 ## Playing with the Farm

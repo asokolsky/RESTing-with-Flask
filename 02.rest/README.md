@@ -1,8 +1,8 @@
 # Starting with REST
 
 What we had before can not be truly considered a REST server. REST servers
-operate on collections and we had none of these.  In this section we shall
-build one.
+operate on collections of objects and we had none of these.  In this section
+we shall build one.
 
 Here are good primers on REST and REST API design best practices:
 
@@ -19,7 +19,7 @@ Review [some REST API examples](https://openclassrooms.com/en/courses/3432056-bu
 * [Google Drive REST API](https://cloud.google.com/storage/docs/json_api/v1/)
 * [GitHub REST API](https://developer.github.com/v3/)
 
-Then read [Farm.API.v01.md](Farm.API.v01.md) for a proposal.
+Farm API specified in [Farm.API.v01.md](Farm.API.v01.md).
 I am not a farming domain expert.
 But for my purposes at this stage such an API will do the job of
 demonstrating the craft of building a REST server.
