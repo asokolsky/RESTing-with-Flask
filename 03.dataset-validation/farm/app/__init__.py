@@ -15,7 +15,6 @@ def create_app( cfgfile ):
     Create main app object, while ingesting the settings from the cfgfile
     '''
     global app
-    global log
     if app is None:
         static_folder = abspath('static')
         app = Flask(
@@ -28,6 +27,12 @@ def create_app( cfgfile ):
             print('Loading config from', cfgfile, '...')
             app.config.from_pyfile(cfgfile)
 
+    return app
+
+def init_app( app ):
+    assert app is not None
+    print('Initializing...')
+    global log
     if log is None:
         #
         # what a mess: https://github.com/pallets/flask/issues/2998
@@ -54,10 +59,5 @@ def create_app( cfgfile ):
         loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
         print('Loggers:', str(loggers))
 
-    return app
-
-def init_app( app ):
-    assert app is not None
-    print('Initializing...')
     from . import routes
     return

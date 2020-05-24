@@ -1,4 +1,4 @@
-# REST Server & Client
+# Better REST Server & Client
 
 ## Server
 
@@ -11,7 +11,7 @@ In this section we are adding the following functionality:
 * APIs animal, POST enforce schema validation
 * more unit tests added in the app folder - see below on how to run those.
 
-We made minor improvements to the schema package:
+A minor improvement was made to the schema package:
 
 * better handling of enums
 
@@ -29,12 +29,13 @@ farm animal del all
 Let's start with the low level APIs that used to work for us in the past:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm -v post /api/v1/animal '{"name":"fluff"}'
+alex@latitude:~/Projects/RESTing-with-Flask/03.dataset-validation/farm$ ./farm -v post /api/v1/animal '{"name":"fluff"}'
+Serving static content from /home/alex/Projects/RESTing-with-Flask/03.dataset-validation/farm/static ...
 Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-HTTP POST http://127.0.0.1:44444/api/v1/animal {'name': 'fluff', 'id': 'e738e53e-5354-4b80-88bb-7357c394ac88'}
-20191026.160610.267 [10] [140208474548032] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.160610.270 [10] [140208474548032] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 409 85
+Using: <Logger farm (WARNING)>
+Logging level set to 20 INFO
+Loggers: [<Logger concurrent.futures (WARNING)>, <Logger concurrent (WARNING)>, <Logger asyncio (WARNING)>, <Logger urllib3.util.retry (WARNING)>, <Logger urllib3.util (WARNING)>, <Logger urllib3 (WARNING)>, <Logger urllib3.connection (WARNING)>, <Logger urllib3.response (WARNING)>, <Logger urllib3.connectionpool (WARNING)>, <Logger urllib3.poolmanager (WARNING)>, <Logger requests (WARNING)>, <Logger farm (INFO)>, <Logger flask.app (WARNING)>, <Logger flask (WARNING)>, <Logger werkzeug (WARNING)>]
+HTTP POST http://127.0.0.1:44444/api/v1/animal {'name': 'fluff', 'id': '91cc24c6-7651-4d68-823d-fbd2c0290b8c'} ...
 HTTP POST => 409 , {'http_status_code': 409, 'text': "Request data error: Missing keys: 'sex', 'species'"}
 got back: {
     "http_status_code": 409,
@@ -42,30 +43,32 @@ got back: {
 }
 ```
 
-We are getting data validation error along with explanation of what is
-expected.  Let's supply the requested data:
+As you can see from teh above, we are getting data validation error along with
+explanation of what is expected.  Let's supply the requested data:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm -v post /api/v1/animal '{"name":"fluff", "sex":"female", "species":"chicken"}'
+alex@latitude:~/Projects/RESTing-with-Flask/03.dataset-validation/farm$ ./farm -v post /api/v1/animal '{"name":"fluff", "sex":"female", "species":"chicken"}'
+Serving static content from /home/alex/Projects/RESTing-with-Flask/03.dataset-validation/farm/static ...
 Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-HTTP POST http://127.0.0.1:44444/api/v1/animal {'name': 'fluff', 'sex': 'female', 'species': 'chicken', 'id': 'c63226fb-1ae1-4d65-8c5c-c991dea4ae91'}
-20191026.160819.216 [10] [139883014424384] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.160819.218 [10] [139883014424384] connectionpool.py:396 http://127.0.0.1:44444 "POST /api/v1/animal HTTP/1.1" 201 108
-HTTP POST => 201 , {'_href': '/api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91', 'id': 'c63226fb-1ae1-4d65-8c5c-c991dea4ae91'}
+Using: <Logger farm (WARNING)>
+Logging level set to 20 INFO
+Loggers: [<Logger concurrent.futures (WARNING)>, <Logger concurrent (WARNING)>, <Logger asyncio (WARNING)>, <Logger urllib3.util.retry (WARNING)>, <Logger urllib3.util (WARNING)>, <Logger urllib3 (WARNING)>, <Logger urllib3.connection (WARNING)>, <Logger urllib3.response (WARNING)>, <Logger urllib3.connectionpool (WARNING)>, <Logger urllib3.poolmanager (WARNING)>, <Logger requests (WARNING)>, <Logger farm (INFO)>, <Logger flask.app (WARNING)>, <Logger flask (WARNING)>, <Logger werkzeug (WARNING)>]
+HTTP POST http://127.0.0.1:44444/api/v1/animal {'name': 'fluff', 'sex': 'female', 'species': 'chicken', 'id': 'fd374172-5e23-44cc-abb4-aa0c3920a404'} ...
+HTTP POST => 201 , {'_href': '/api/v1/animal/fd374172-5e23-44cc-abb4-aa0c3920a404', 'id': 'fd374172-5e23-44cc-abb4-aa0c3920a404'}
 got back: {
-    "_href": "/api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91",
-    "id": "c63226fb-1ae1-4d65-8c5c-c991dea4ae91"
+    "_href": "/api/v1/animal/fd374172-5e23-44cc-abb4-aa0c3920a404",
+    "id": "fd374172-5e23-44cc-abb4-aa0c3920a404"
 }
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm get /api/v1/animal
+alex@latitude:~/Projects/RESTing-with-Flask/03.dataset-validation/farm$ ./farm get /api/v1/animal
+Serving static content from /home/alex/Projects/RESTing-with-Flask/03.dataset-validation/farm/static ...
 Loading config from farm.cfg ...
-Logging level set to 10 DEBUG
-20191026.160939.899 [10] [139829478987584] connectionpool.py:208 Starting new HTTP connection (1): 127.0.0.1
-20191026.160939.901 [10] [139829478987584] connectionpool.py:396 http://127.0.0.1:44444 "GET /api/v1/animal HTTP/1.1" 200 110
+Using: <Logger farm (WARNING)>
+Logging level set to 20 INFO
+Loggers: [<Logger concurrent.futures (WARNING)>, <Logger concurrent (WARNING)>, <Logger asyncio (WARNING)>, <Logger urllib3.util.retry (WARNING)>, <Logger urllib3.util (WARNING)>, <Logger urllib3 (WARNING)>, <Logger urllib3.connection (WARNING)>, <Logger urllib3.response (WARNING)>, <Logger urllib3.connectionpool (WARNING)>, <Logger urllib3.poolmanager (WARNING)>, <Logger requests (WARNING)>, <Logger farm (INFO)>, <Logger flask.app (WARNING)>, <Logger flask (WARNING)>, <Logger werkzeug (WARNING)>]
 got back: [
     {
-        "_href": "/api/v1/animal/c63226fb-1ae1-4d65-8c5c-c991dea4ae91",
-        "id": "c63226fb-1ae1-4d65-8c5c-c991dea4ae91"
+        "_href": "/api/v1/animal/fd374172-5e23-44cc-abb4-aa0c3920a404",
+        "id": "fd374172-5e23-44cc-abb4-aa0c3920a404"
     }
 ]
 ```
@@ -227,37 +230,10 @@ got back: []
 We added tests in the app folder.  To launch all the tests:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest
+alex@latitude:~/Projects/RESTing-with-Flask/03.dataset-validation/farm$ python3 -m unittest app/test_dataset.py  app/test_farm_schema.py 
 ..
 ----------------------------------------------------------------------
 Ran 2 tests in 0.001s
 
 OK
 ```
-
-The above will look for all the python files starting with test_ and will run
-unit test on those.
-
-Alternatively you can test one module at a time:
-
-```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest test_dataset -v
-test_dataset (test_dataset.TestDataset) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.000s
-
-OK
-alex@latitude:~/Projects/RESTing-with-Flask/03/farm/app$ python3 -m unittest test_farm_schema -v
-test_animal_schema (test_farm_schema.TestFarmSchema) ... ok
-
-----------------------------------------------------------------------
-Ran 1 test in 0.001s
-
-OK
-```
-
-## Stressing the Farm
-
-To be continued...
-

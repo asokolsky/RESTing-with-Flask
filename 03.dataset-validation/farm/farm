@@ -135,7 +135,7 @@ def animal_get(cl, data):
     else:
         uri = '/api/v1/animal/' + data
     (status_code, rdata) = cl.get(uri)
-    #print('got back:', dumps(rdata, indent=4))
+    print('got back:', dumps(rdata, indent=4))
     return rdata
 
 def animal_del(cl, data):
