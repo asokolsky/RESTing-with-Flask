@@ -2,15 +2,18 @@
 
 For development you will need:
 
-* git, 
+* git
 * python,
 * extra python packages (e.g. flask, argparse, etc),
 * development environment (e.g. emacs or code or PyCharm).
 
 For testing you will also need:
 
-* web browser, e.g. chrome, maybe even with REST extenions
-* tools like curl, or postman (https://www.getpostman.com/)
+* a web browser, e.g. chrome, maybe even with REST extensions, e.g. 
+[Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US)
+or [RESTClient](https://addons.mozilla.org/en-US/firefox/addon/restclient/)
+* tools like [curl](https://www.tecmint.com/linux-curl-command-examples/),
+or [postman](https://www.getpostman.com/)
 
 My configuration:
 
@@ -38,7 +41,7 @@ preference:
 
 This demonstrates that I have two version of python on my laptop:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask$ which python
 /usr/bin/python
 alex@latitude:~/Projects/RESTing-with-Flask$ python --version
@@ -61,7 +64,7 @@ though.
 
 Once you have python3 installed, installing flask is easy:
 
-```
+```bash
 alex@latitude:~/Projects/RESTing-with-Flask$ flask
 
 Command 'flask' not found, but can be installed with:
@@ -113,9 +116,9 @@ Preparing to unpack .../4-python3-werkzeug_0.14.1+dfsg1-1_all.deb ...
 Unpacking python3-werkzeug (0.14.1+dfsg1-1) ...
 ```
 
-## Packages Installation
+## Python Packages Installation
 
-```
+```bash
 alex@latitude:~$ pip3 install argparse
 Collecting argparse
   Downloading https://files.pythonhosted.org/packages/f2/94/3af39d34be01a24a6e65433d19e107099374224905f1e0cc6bbe1fd22a2f/argparse-1.4.0-py2.py3-none-any.whl
@@ -135,3 +138,9 @@ Download from: https://code.visualstudio.com
 Make sure to install the extensions for python development.  I also have
 enabled preview for .md and .asciidoc files.
 
+## Database
+
+We will use [CouchDB](https://couchdb.apache.org), mostly because of its
+wonderful support for REST and JSON. Install CouchDB from your OS vendor
+repository.  If not there, use pre-built binaries from
+https://couchdb.apache.org/#download
