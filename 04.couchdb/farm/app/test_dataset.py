@@ -12,13 +12,24 @@ from schema import (
     #SchemaError,
     #Use,
 )
-
 from dataset import DataSetRAM
+
+from . import app, log, create_app
 
 # create benign Schema
 NoSchema = Schema(object)
 
 class TestDataset(unittest.TestCase):
+
+    @classmethod
+    def setUpClass( cls ):
+        '''
+        Once for all the tests in this module..
+        '''
+        # create log object needed in dataset
+        global app
+        app = create_app( 'farm.cfg' )
+        return
 
     def setUp(self):
         '''

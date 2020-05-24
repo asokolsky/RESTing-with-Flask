@@ -24,11 +24,12 @@ def create_app( cfgfile ):
         if cfgfile:
             print('Loading config from', cfgfile, '...')
             app.config.from_pyfile(cfgfile)
+
+        from .logger import create_log
+        global log
+        if log is None:
+            log = create_log( app )
     
-    from .logger import create_log
-    global log
-    if log is None:
-        log = create_log( app )
     return app
 
 def init_app( app ):
@@ -37,6 +38,7 @@ def init_app( app ):
     '''
     assert app is not None
     print('Initializing...')
+    
     from . import routes
     from . import dataset
 

@@ -11,7 +11,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from app.logger import log
-assert log is not None
+#assert log is not None
 
 
 class DataSet(ABC):
