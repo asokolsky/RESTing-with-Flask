@@ -11,7 +11,7 @@ def create_app( cfgfile ):
     global app
     if app is None:
         app = Flask(
-            'farm', #__name__,
+            'helloworld',
             instance_path=abspath(join( __file__, '../../conf' )),
             instance_relative_config=True)
     if cfgfile:

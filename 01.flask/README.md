@@ -1,22 +1,24 @@
 # Starting with Flask
 
-In this section we will build a simple flask application with launcher and a client,
-See farm folder.  Here is the recommended way to start working on this:
+In this section we will build a flask HelloWorld application.
+It will have:
+
+* a launcher
+* a command line client
+
+Here is the recommended way to start working on this:
 
 ```bash
 alex@latitude:~$ cd Projects/RESTing-with-Flask
-alex@latitude:~/Projects/RESTing-with-Flask$ cd 01
-alex@latitude:~/Projects/RESTing-with-Flask/01$ code .
-alex@latitude:~/Projects/RESTing-with-Flask/01$ 
-
+alex@latitude:~/Projects/RESTing-with-Flask$ code 01.flask
 ```
 
 ## This Section Covers
 
-Explore farm folder to see howto:
+Explore to see how to:
 
 * create a simple flask app talking json to client(s)
-* start flask app from an external python script (farm start)
-* use python to talk to a REST server (farm get /)
+* start flask app from an external python script (helloworld start)
+* use python to talk to a REST server (helloworld get /)
 
-Procceed to the [farm](farm).
+Proceed to the [helloworld](helloworld) now.

@@ -1,15 +1,15 @@
-# Simple Farm - Design and Implementation
+Simple HelloWorld API - Design and Implementation
 
-## Farm Configuration
+## REST Service Configuration
 
 Folder conf contains configuration files.  Default configuration file name is
-farm.cfg.  This file is read by both farm server and client - after all both
-need to know where the server is located.
+helloworld.cfg.  This file is read by both the server and the client - after
+all both need to know where the server is located.
 
 ## Server
 
-We begin with a 'Hello World' server implemented in python3 using
-(bare) Flask.
+We begin with a 'Hello World' server implemented in python3 using a (bare)
+Flask.
 
 To learn more about building flask applications check out the [Flask Mega
 Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world).
@@ -19,47 +19,56 @@ Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-he
 Start with this:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/01/farm$ ./farm -h
-usage: farm [-h] [-c CONFIG] [-v] {start,get} ...
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask$ cd helloworld/
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ ls -la
+total 32
+drwxr-xr-x 5 alex alex 4096 May 24 15:02 .
+drwxrwxr-x 4 alex alex 4096 May 24 15:02 ..
+drwxr-xr-x 3 alex alex 4096 Nov 17  2019 app
+drwxrwxr-x 2 alex alex 4096 May 24 15:03 conf
+-rwxrwxr-x 1 alex alex 2913 May 24 15:11 helloworld
+drwxr-xr-x 2 alex alex 4096 Nov 23  2019 __pycache__
+-rw-r--r-- 1 alex alex 3617 May 24 15:12 README.md
+-rw-r--r-- 1 alex alex 1225 Sep 21  2019 restc.py
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ ./helloworld -h
+usage: helloworld [-h] [-c CONFIG] [-v] {start,get} ...
 
-Farm REST API server.
+HelloWorld REST API server.
 
 positional arguments:
-  {start,get}           Farm sub-commands
-    start               Start Farm REST API development server. Not for
+  {start,get}           HelloWorld sub-commands
+    start               Start the REST API development server. Not for
                         production use.
-    get                 Issue GET request to the farm server.
+    get                 Issue GET request to the REST API server.
 
 optional arguments:
   -h, --help            show this help message and exit
   -c CONFIG, --config CONFIG
-                        Load configuration from CONFIG, defaults to farm.cfg
+                        Load configuration from CONFIG, defaults to
+                        helloworld.cfg
   -v, --verbose         Tell more about what is going on
-alex@latitude:~/Projects/RESTing-with-Flask/01/farm$ ./farm start -h
-usage: farm start [-h]
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ ./helloworld start -h
+usage: helloworld start [-h]
 
-Start Farm REST API development server.
+Start the REST API development server.
 
 optional arguments:
   -h, --help  show this help message and exit
-alex@latitude:~/Projects/RESTing-with-Flask/01/farm$ 
 ```
 
-To start the server just do this:
+To start the server just do:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/01/farm$ ./farm start
-Loading config from farm.cfg ...
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ ./helloworld start
+Starting service pid 21804
+Loading config from helloworld.cfg ...
 Initializing...
- * Serving Flask app "farm" (lazy loading)
- * Environment: development
- * Debug mode: on
+ * Serving Flask app "helloworld" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
  * Running on http://127.0.0.1:44444/ (Press CTRL+C to quit)
- * Restarting with stat
-Loading config from farm.cfg ...
-Initializing...
- * Debugger is active!
- * Debugger PIN: 335-616-217
 ```
 
 You can now point your web browser to http://127.0.0.1:44444/ and see the results!
@@ -84,18 +93,18 @@ Just press Ctrl+C
 Off course you can just use your browser. Point it to the interface and port
 specified in the configuration file - defaults to http://127.0.0.1:44444
 
-Alternatively you can use python farm client implemented in:
+Alternatively you can use python helloworld client implemented in:
 
-* launcher farm and
+* launcher helloworld and
 * restc.py
 
-### Using Farm Client
+### Using HelloWorld Client
 
-The same farm launcher is used to run a client:
+The same helloworld launcher is used to run a client:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/01$ ./farm/farm -v get index
-Loading config from farm.cfg ...
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ ./helloworld -v get index
+Loading config from helloworld.cfg ...
 HTTP GET http://127.0.0.1:44444/index ...
 HTTP GET http://127.0.0.1:44444/index => 200 , {'message': 'Hello, World!'}
 got back: {
@@ -105,18 +114,20 @@ got back: {
 
 ## Note on Python
 
-Python, being an interpreter, may be late in reporting problems.  Now and then
-I run pyflakes:
+Python, being an interpreter, may be late in reporting problems.
+Now and then I run pyflakes:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/01.flask/farm$ pyflakes farm
-farm:32: redefinition of unused 'app' from line 29
-farm:52: redefinition of unused 'app' from line 49
-
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ pyflakes ./helloworld
+./helloworld:47:65: invalid syntax
+        print( 'Ctrl-C caught in service start, aborting.', file=stderr )
+                                                                ^
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ pyflakes *.py
+alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ pyflakes app/*.py
+app/__init__.py:26: '.routes' imported but unused
 ```
 
 ## Note on Flask Process(es)
 
-You can run Flask app threaded or with multiple processes.  For now we are runnning
+You can run Flask app threaded or with multiple processes.  For now we are running
 it in a default configuration: single process with threading enabled.
-
