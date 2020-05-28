@@ -1,6 +1,6 @@
-# REST Server & Client
+# REST Service & Client
 
-## Server
+## Farm API Server
 
 Farm API v1 is implemented in the following files:
 

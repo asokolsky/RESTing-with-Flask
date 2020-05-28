@@ -1,6 +1,6 @@
 # Starting with REST
 
-What we had before can not be truly considered a REST server. REST servers
+What we had before can not be truly considered a REST service. REST services
 operate on collections of objects and we had none of these.  In this section
 we shall build one.
 
