@@ -7,6 +7,7 @@
 import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 import unittest
+import random
 from schema import (
     Schema,
     #SchemaError,
@@ -14,7 +15,7 @@ from schema import (
 )
 from dataset import DataSetRAM
 
-from . import app, log, create_app
+from . import app, log, create_app, init_app
 
 # create benign Schema
 NoSchema = Schema(object)
@@ -22,13 +23,36 @@ NoSchema = Schema(object)
 class TestDataset(unittest.TestCase):
 
     @classmethod
-    def setUpClass( cls ):
+    def setUpClass(cls):
+        '''
+        Executed once for module and before any test.
+        Launch Farm server - compare to farm::farm_start
+        '''
+        random.seed()
+
+        global app
+        app = create_app('farm_test.cfg')
+        init_app(app)
+
+        app.config['TESTING'] = True
+        app.config['DEBUG'] = False
+        #
+        # This is important!
+        # we will be using a test FLASK client
+        # which does not required for the flask app to run!
+        #
+        app.testing = True
+        cls.app = app.test_client()
+        assert not app.debug
+        return
+
+    @classmethod
+    def tearDownClass( cls ):
         '''
         Once for all the tests in this module..
         '''
-        # create log object needed in dataset
         global app
-        app = create_app( 'farm.cfg' )
+        app = None
         return
 
     def setUp(self):

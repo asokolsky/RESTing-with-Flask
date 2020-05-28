@@ -18,10 +18,14 @@ def get_random(ar):
     return ar[random.randint(0, len(ar)-1)]
 
 class TestFarm(unittest.TestCase):
+    '''
+    Test cases for testing Flask app
+    '''
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         '''
-        Executed prior to each test.
+        Executed once for module and before any test.
         Launch Farm server - compare to farm::farm_start
         '''
         random.seed()
@@ -37,8 +41,14 @@ class TestFarm(unittest.TestCase):
         # which does not required for the flask app to run!
         #
         app.testing = True
-        self.app = app.test_client()
-        self.assertEqual(app.debug, False)
+        cls.app = app.test_client()
+        assert not app.debug
+        return
+
+    def setUp(self):
+        '''
+        Executed prior to each test.
+        '''
         return
 
     def tearDown(self):
@@ -116,7 +126,8 @@ class TestFarm(unittest.TestCase):
 
         iAnimals = 59
         for i in range(iAnimals):
-            self.post_an_animal()
+            resp = self.post_an_animal()
+            self.assertEqual(resp.status_code, 201)
 
         # verify animals were created
         ans = self.get_animals()
