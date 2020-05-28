@@ -1,6 +1,4 @@
-Simple HelloWorld API - Design and Implementation
-
-## REST Service Configuration
+## Common Client/Server Configuration
 
 Folder conf contains configuration files.  Default configuration file name is
 helloworld.cfg.  This file is read by both the server and the client - after
