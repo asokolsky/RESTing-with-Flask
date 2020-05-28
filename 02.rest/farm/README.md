@@ -166,6 +166,8 @@ got back: {}
 
 ## Testing Farm
 
+Python comes with a built-in unit test support.  Let us take advantage of it.
+
 HTTP client implementation is tested in test_restc.py against an external web
 site http://httpbin.org, so your internet connection should be up for this to
 work.
@@ -176,15 +178,132 @@ does not even have to run for the test to work!
 To launch all the tests:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 -m unittest
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ python3 -m unittest
+Serving static content from /home/alex/Projects/RESTing-with-Flask/02.rest/farm/static ...
+Loading config from farm.cfg ...
+Logging level set to 10 DEBUG
+Initializing...
+20200527.214410.709 [20] [139818624431936] routes.py:44 /api/v1/animal POST {'id': '28dc2583-5ca5-4a89-aebc-60d07c0c8fdb', 'weight': 4500}
+20200527.214410.710 [10] [139818624431936] routes.py:48 /api/v1/animal POST {
+    "id": "28dc2583-5ca5-4a89-aebc-60d07c0c8fdb",
+    "weight": 4500
+}
+20200527.214410.711 [20] [139818624431936] routes.py:44 /api/v1/animal POST {'id': 'd9893f1a-4ac1-4092-88c8-438757fbc518', 'weight': 4500}
+20200527.214410.711 [10] [139818624431936] routes.py:48 /api/v1/animal POST {
+    "id": "d9893f1a-4ac1-4092-88c8-438757fbc518",
+    "weight": 4500
+}
+20200527.214410.713 [20] [139818624431936] routes.py:44 /api/v1/animal POST {'id': '81b4b17a-c966-4266-8a4c-b1585f24c0aa', 'weight': 4500}
+20200527.214410.713 [10] [139818624431936] routes.py:48 /api/v1/animal POST {
+    "id": "81b4b17a-c966-4266-8a4c-b1585f24c0aa",
+    "weight": 4500
+}
+20200527.214410.714 [20] [139818624431936] routes.py:44 /api/v1/animal POST {'id': '2baf756d-ba4c-4065-87c5-097b5039a0cb', 'weight': 4500}
+20200527.214410.714 [10] [139818624431936] routes.py:48 /api/v1/animal POST {
+    "id": "2baf756d-ba4c-4065-87c5-097b5039a0cb",
+    "weight": 4500
+}
+20200527.214410.716 [20] [139818624431936] routes.py:44 /api/v1/animal POST {'id': '83daabbf-c5eb-4b07-aae1-8c55d5fc6077', 'weight': 4500}
+20200527.214410.716 [10] [139818624431936] routes.py:48 /api/v1/animal POST {
+    "id": "83daabbf-c5eb-4b07-aae1-8c55d5fc6077",
+    "weight": 4500
+}
+.HTTP DELETE http://httpbin.org:80/delete  ...
+20200527.214410.724 [10] [139818624431936] connectionpool.py:208 Starting new HTTP connection (1): httpbin.org
+20200527.214410.902 [10] [139818624431936] connectionpool.py:396 http://httpbin.org:80 "DELETE /delete HTTP/1.1" 200 401
+HTTP DELETE => 200 , {'args': {}, 'data': '', 'files': {}, 'form': {}, 'headers': {'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Content-Length': '0', 'Host': 'httpbin.org', 'User-Agent': 'python-requests/2.18.4', 'X-Amzn-Trace-Id': 'Root=1-5ecf419a-ae037360efa3ac10212f3c24'}, 'json': None, 'origin': '76.103.188.220', 'url': 'http://httpbin.org/delete'}
+HTTP Response Headers:
+    Date : Thu, 28 May 2020 04:44:10 GMT
+    Content-Type : application/json
+    Content-Length : 401
+    Connection : keep-alive
+    Server : gunicorn/19.9.0
+    Access-Control-Allow-Origin : *
+    Access-Control-Allow-Credentials : true
+.HTTP GET http://httpbin.org:80/ip  ...
+20200527.214410.908 [10] [139818624431936] connectionpool.py:208 Starting new HTTP connection (1): httpbin.org
+20200527.214411.072 [10] [139818624431936] connectionpool.py:396 http://httpbin.org:80 "GET /ip HTTP/1.1" 200 33
+HTTP GET => 200 , {'origin': '76.103.188.220'}
+HTTP Response Headers:
+    Date : Thu, 28 May 2020 04:44:11 GMT
+    Content-Type : application/json
+    Content-Length : 33
+    Connection : keep-alive
+    Server : gunicorn/19.9.0
+    Access-Control-Allow-Origin : *
+    Access-Control-Allow-Credentials : true
+HTTP GET http://httpbin.org:80/user-agent  ...
+20200527.214411.160 [10] [139818624431936] connectionpool.py:396 http://httpbin.org:80 "GET /user-agent HTTP/1.1" 200 45
+HTTP GET => 200 , {'user-agent': 'python-requests/2.18.4'}
+HTTP Response Headers:
+    Date : Thu, 28 May 2020 04:44:11 GMT
+    Content-Type : application/json
+    Content-Length : 45
+    Connection : keep-alive
+    Server : gunicorn/19.9.0
+    Access-Control-Allow-Origin : *
+    Access-Control-Allow-Credentials : true
+HTTP GET http://httpbin.org:80/get  ...
+20200527.214411.257 [10] [139818624431936] connectionpool.py:396 http://httpbin.org:80 "GET /get HTTP/1.1" 200 307
+HTTP GET => 200 , {'args': {}, 'headers': {'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Host': 'httpbin.org', 'User-Agent': 'python-requests/2.18.4', 'X-Amzn-Trace-Id': 'Root=1-5ecf419b-b7518e2b15406934caf4ad63'}, 'origin': '76.103.188.220', 'url': 'http://httpbin.org/get'}
+HTTP Response Headers:
+    Date : Thu, 28 May 2020 04:44:11 GMT
+    Content-Type : application/json
+    Content-Length : 307
+    Connection : keep-alive
+    Server : gunicorn/19.9.0
+    Access-Control-Allow-Origin : *
+    Access-Control-Allow-Credentials : true
+.HTTP PATCH http://httpbin.org:80/patch {'a': 'value-of-a', 'b': 1234, 'c': {'d': ['I', 'love', 'REST'], 'e': 'done'}} ...
+20200527.214411.262 [10] [139818624431936] connectionpool.py:208 Starting new HTTP connection (1): httpbin.org
+20200527.214411.420 [10] [139818624431936] connectionpool.py:396 http://httpbin.org:80 "PATCH /patch HTTP/1.1" 200 685
+HTTP PATCH => 200 , {'args': {}, 'data': '{"a": "value-of-a", "b": 1234, "c": {"d": ["I", "love", "REST"], "e": "done"}}', 'files': {}, 'form': {}, 'headers': {'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Content-Length': '78', 'Content-Type': 'application/json', 'Host': 'httpbin.org', 'User-Agent': 'python-requests/2.18.4', 'X-Amzn-Trace-Id': 'Root=1-5ecf419b-f484deda23f9fd1e54a446c6'}, 'json': {'a': 'value-of-a', 'b': 1234, 'c': {'d': ['I', 'love', 'REST'], 'e': 'done'}}, 'origin': '76.103.188.220', 'url': 'http://httpbin.org/patch'}
+HTTP Response Headers:
+    Date : Thu, 28 May 2020 04:44:11 GMT
+    Content-Type : application/json
+    Content-Length : 685
+    Connection : keep-alive
+    Server : gunicorn/19.9.0
+    Access-Control-Allow-Origin : *
+    Access-Control-Allow-Credentials : true
+.HTTP POST http://httpbin.org:80/post {'a': 'value-of-a', 'b': 1234, 'c': {'d': ['I', 'love', 'REST'], 'e': 'done'}} ...
+20200527.214411.426 [10] [139818624431936] connectionpool.py:208 Starting new HTTP connection (1): httpbin.org
+20200527.214411.586 [10] [139818624431936] connectionpool.py:396 http://httpbin.org:80 "POST /post HTTP/1.1" 200 684
+HTTP POST => 200 , {'args': {}, 'data': '{"a": "value-of-a", "b": 1234, "c": {"d": ["I", "love", "REST"], "e": "done"}}', 'files': {}, 'form': {}, 'headers': {'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Content-Length': '78', 'Content-Type': 'application/json', 'Host': 'httpbin.org', 'User-Agent': 'python-requests/2.18.4', 'X-Amzn-Trace-Id': 'Root=1-5ecf419b-66131cd4097988a6ede65c40'}, 'json': {'a': 'value-of-a', 'b': 1234, 'c': {'d': ['I', 'love', 'REST'], 'e': 'done'}}, 'origin': '76.103.188.220', 'url': 'http://httpbin.org/post'}
+HTTP Response Headers:
+    Date : Thu, 28 May 2020 04:44:11 GMT
+    Content-Type : application/json
+    Content-Length : 684
+    Connection : keep-alive
+    Server : gunicorn/19.9.0
+    Access-Control-Allow-Origin : *
+    Access-Control-Allow-Credentials : true
+.HTTP PUT http://httpbin.org:80/put {'a': 'value-of-a', 'b': 1234, 'c': {'d': ['I', 'love', 'REST'], 'e': 'done'}} ...
+20200527.214411.592 [10] [139818624431936] connectionpool.py:208 Starting new HTTP connection (1): httpbin.org
+20200527.214411.752 [10] [139818624431936] connectionpool.py:396 http://httpbin.org:80 "PUT /put HTTP/1.1" 200 683
+HTTP PUT => 200 , {'args': {}, 'data': '{"a": "value-of-a", "b": 1234, "c": {"d": ["I", "love", "REST"], "e": "done"}}', 'files': {}, 'form': {}, 'headers': {'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate', 'Content-Length': '78', 'Content-Type': 'application/json', 'Host': 'httpbin.org', 'User-Agent': 'python-requests/2.18.4', 'X-Amzn-Trace-Id': 'Root=1-5ecf419b-1634e8c8e60acaf84984b138'}, 'json': {'a': 'value-of-a', 'b': 1234, 'c': {'d': ['I', 'love', 'REST'], 'e': 'done'}}, 'origin': '76.103.188.220', 'url': 'http://httpbin.org/put'}
+HTTP Response Headers:
+    Date : Thu, 28 May 2020 04:44:11 GMT
+    Content-Type : application/json
+    Content-Length : 683
+    Connection : keep-alive
+    Server : gunicorn/19.9.0
+    Access-Control-Allow-Origin : *
+    Access-Control-Allow-Credentials : true
+.
+----------------------------------------------------------------------
+Ran 6 tests in 1.056s
+
+OK
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ 
 ```
 
-The above will look for all the python files starting with test_ and will run
+The above command looks for all the python files starting with test_ and runs
 unit test on those.
 
 Alternatively you can test one module at a time:
 
 ```bash
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_restc.py
-alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_farm.py
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ python3 test_restc.py
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ python3 test_farm.py
 ```
