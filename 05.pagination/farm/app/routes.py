@@ -38,8 +38,8 @@ def form_elt( id ):
 
 def get_page_args( request ):
     '''
-    Retreive the pagination arguments.
-    Returns page, per_page
+    Retrieve the pagination arguments.
+    Returns tuple (page, per_page)
     '''
     #log.debug('request.args: %s', str(request.args))
     page = request.args.get('page', default = 1, type=int)
@@ -84,6 +84,7 @@ def api_animals():
         page, per_page = get_page_args( request )
         total, res = dataset.theAnimals.get_page(page, per_page, form_elt)
         resp = make_response(jsonify(res), 200)
+
         # form headers
         resp.headers['X-Total-Count'] = total
         resp.headers['Link'] = make_link_header(total, page, per_page)
@@ -101,9 +102,11 @@ def api_animals():
     id = rd.get('id', None)
     if id is None:
         return error409('Request must be a JSON with id')
+
     exists = dataset.theAnimals.get(id)
     if exists is not None:
         return error409('Can not POST to an existing entity.')
+
     try:
         if dataset.theAnimals.put(id, rd):
             elt = { 
@@ -174,9 +177,12 @@ def api_conf():
         if(k == 'SECRET_KEY'):
             # keep the secret secret
             continue
+
         log.debug("%s:%s", k, v)
         if(isinstance(v, datetime.timedelta)):
             # this type crashes jsonify
             v = str(v)
+
         res[ k ] = v
+
     return jsonify(res)

@@ -20,6 +20,7 @@ class rest_client:
         self.verbose = verbose
         self.dumpHeaders = dumpHeaders
         self.ses = Session()
+        self.resp = None
         return
 
     def close(self):
@@ -27,6 +28,7 @@ class rest_client:
         Close the underlying TCP connection
         '''
         self.ses.close()
+        self.resp = None
         return
 
     def print_req(self, method, url, data=None, kwargs=None):
@@ -39,13 +41,13 @@ class rest_client:
             print(kwargs)
         return
 
-    def print_resp(self, method, resp):
+    def print_resp(self, method):
         if self.verbose:
-            print('HTTP', method, '=>', resp.status_code, ',', str(resp.json()))
+            print('HTTP', method, '=>', self.resp.status_code, ',', str(self.resp.json()))
         if self.dumpHeaders:
             print('HTTP Response Headers:')
-            for h in resp.headers:
-                print('   ', h, ':', resp.headers[h])
+            for h in self.resp.headers:
+                print('   ', h, ':', self.resp.headers[h])
         return
 
     def get(self, uri, **kwargs):
@@ -56,9 +58,9 @@ class rest_client:
         '''
         url = urljoin(self.base_url, uri)
         self.print_req('GET', url, None, kwargs)
-        resp = self.ses.get(url, **kwargs)
-        self.print_resp('GET', resp)
-        return (resp.status_code, resp.json())
+        self.resp = self.ses.get(url, **kwargs)
+        self.print_resp('GET')
+        return (self.resp.status_code, self.resp.json())
 
     def post(self, uri, pdata):
         '''
@@ -68,9 +70,9 @@ class rest_client:
         '''
         url = urljoin(self.base_url, uri)
         self.print_req('POST', url, pdata)
-        resp = self.ses.post(url, json=pdata)
-        self.print_resp('POST', resp)
-        return (resp.status_code, resp.json())
+        self.resp = self.ses.post(url, json=pdata)
+        self.print_resp('POST')
+        return (self.resp.status_code, self.resp.json())
 
     def delete(self, uri):
         '''
@@ -80,9 +82,9 @@ class rest_client:
         '''
         url = urljoin(self.base_url, uri)
         self.print_req('DELETE', url)
-        resp = self.ses.delete(url)
-        self.print_resp('DELETE', resp)
-        return (resp.status_code, resp.json())
+        self.resp = self.ses.delete(url)
+        self.print_resp('DELETE')
+        return (self.resp.status_code, self.resp.json())
 
     def put(self, uri, pdata):
         '''
@@ -92,9 +94,9 @@ class rest_client:
         '''
         url = urljoin(self.base_url, uri)
         self.print_req('PUT', url, pdata)
-        resp = self.ses.put(url, json=pdata)
-        self.print_resp('PUT', resp)
-        return (resp.status_code, resp.json())
+        self.resp = self.ses.put(url, json=pdata)
+        self.print_resp('PUT')
+        return (self.resp.status_code, self.resp.json())
 
     def patch(self, uri, pdata):
         '''
@@ -104,6 +106,6 @@ class rest_client:
         '''
         url = urljoin(self.base_url, uri)
         self.print_req('PATCH', url, pdata)
-        resp = self.ses.patch(url, json=pdata)
-        self.print_resp('PATCH', resp)
-        return (resp.status_code, resp.json())
+        self.resp = self.ses.patch(url, json=pdata)
+        self.print_resp('PATCH')
+        return (self.resp.status_code, self.resp.json())

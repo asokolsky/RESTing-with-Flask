@@ -19,13 +19,15 @@ def get_random(ar):
 
 class TestFarm(unittest.TestCase):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         '''
-        Executed prior to each test.
+        Executed once for module and before any test.
         Launch Farm server - compare to farm::farm_start
         '''
         random.seed()
 
+        global app
         app = create_app('farm_test.cfg')
         init_app(app)
 
@@ -37,8 +39,27 @@ class TestFarm(unittest.TestCase):
         # which does not required for the flask app to run!
         #
         app.testing = True
-        self.app = app.test_client()
-        self.assertEqual(app.debug, False)
+        cls.app = app.test_client()
+        assert not app.debug
+        return
+
+    @classmethod
+    def tearDownClass( cls ):
+        '''
+        Once for all the tests in this module..
+        '''
+        global app
+        app = None
+        return
+
+    def setUp(self):
+        '''
+        Executed prior to each test.
+        '''
+        # any animals out there?
+        ans = self.get_animals()
+        for an in ans:
+            print('clean', an)            
         return
 
     def tearDown(self):
@@ -49,22 +70,20 @@ class TestFarm(unittest.TestCase):
 
     def get(self, uri):
         '''
-        Wrapper around get
+        Wrapper around the test client get
         '''
         # , follow_redirects=True
         return self.app.get('/api/v1/' + uri)
 
     def post(self, uri, jdata):
         '''
-        Wrapper around post
+        Wrapper around the test client post
         '''
-        res = self.app.post('/api/v1/' + uri, json=jdata)
-        print('res', res)
-        return res
+        return self.app.post('/api/v1/' + uri, json=jdata)
 
     def delete(self, uri):
         '''
-        Wrapper around delete
+        Wrapper around the test client delete
         '''
         return self.app.delete('/api/v1/' + uri)
 
@@ -98,19 +117,27 @@ class TestFarm(unittest.TestCase):
         return self.delete('animal/' + id)
 
     def get_animals(self):
-        uri = 'animal'
-        resp = self.get(uri)
-        self.assertEqual(resp.status_code, 200)
-        #return resp.get_data()
-        # return resp.json()
-        return loads(resp.get_data(as_text=True))
+        '''
+        Retrieve animals from the server, hide pagination effects.
+        '''
+        animals = []
+        page = 0
+        while True:
+            page += 1
+            uri = '/api/v1/animal?per_page=10&page=' + str(page)
+            resp = self.app.get( uri )
+            self.assertEqual( resp.status_code, 200 )
+            animals.extend( loads( resp.get_data( as_text=True ) ) )
+            if int(resp.headers.get( 'X-Total-Count', '0' )) <= len( animals ):
+                break
+
+        return animals
 
     def test_animals(self):
         '''
         Verify functionality of the animal collection
         '''
 
-        # any animals out there?
         ans = self.get_animals()
         self.assertEqual(ans, [])
 

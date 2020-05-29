@@ -35,5 +35,5 @@ def create_log( app ):
         print('Logging level set to', iLevel, level)
 
     loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
-    print('Loggers:', str(loggers))
+    #print('Loggers:', str(loggers))
     return log

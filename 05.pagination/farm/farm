@@ -131,20 +131,39 @@ def animal_new(cl, data, n):
             break
     return
 
+def animal_get_all(cl):
+    '''
+    Retrieve all the animal records.
+    Returns the list of all the animals.
+    '''
+    uri = '/api/v1/animal'
+    params = {
+        'page': 0,
+        'per_page': 32
+    }
+    animals = []
+    page = 0
+    while True:
+        page += 1
+        (status_code, rdata) = cl.get(uri, params=params)
+        if status_code != 200:
+            break
+        animals.extend( rdata )
+        if int(cl.resp.headers.get( 'X-Total-Count', '0' )) <= len( animals ):
+            break
+
+    return animals
+
 def animal_get(cl, data, options):
     '''
     Retrieve an animal record.
     In: data should be ID
     '''
-    params = {
-        'page': options.page,
-        'per_page': options.per_page
-    }
     if data == 'all':        
-        uri = '/api/v1/animal'
-    else:
-        uri = '/api/v1/animal/' + data
-    (status_code, rdata) = cl.get(uri, params=params)
+        return animal_get_all(cl)
+
+    uri = '/api/v1/animal/' + data
+    (status_code, rdata) = cl.get(uri)
     print('got back:', dumps(rdata, indent=4))
     return rdata
 
@@ -166,7 +185,7 @@ def animal_del_all(cl):
     '''
     Delete all the known animals!    
     '''
-    adata = animal_get(cl, 'all')
+    adata = animal_get_all(cl)
     for a in adata:
         id = a.get('id')
         animal_del(cl, id)
@@ -209,11 +228,11 @@ def farm_stressor( iface, port, verbose, incHeaders ):
 
     cl = rest_client(iface, port, verbose, incHeaders)
     # any animals out there to stress?
-    ans = animal_get(cl, 'all')
+    ans = animal_get_all(cl)
     if( len(ans) == 0 ):
         # if not - create one
         animal_new(cl, '{"species": "chicken", "sex": "female"}', 100)
-    ans = animal_get(cl, 'all')
+    ans = animal_get_all(cl)
     if( len(ans) == 0 ):
         return
     # we got an animal to stress - hopefully the same for all the stressors

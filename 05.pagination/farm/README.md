@@ -4,8 +4,8 @@ As our dataset (farm) grows, we begin to have practical concerns about
 efficiency of interaction with it. For example, If we have thousands of
 elements in the collection animals, retrieving all of them in one transaction
 may be time consuming.  This is undesirable for both the server (too much time
-spent on one activity possibly at the expense of the others) and the client
-(may leave GUI unresponsive).
+spent on one activity possibly at the expense of the other clients) and the
+client (may leave GUI unresponsive).
 
 _Pagination_ will allow us to page through elements of a long collection without
 storing anything on the server.
@@ -17,25 +17,25 @@ There is definitely more than one way to accomplish either.
 
 ## Pagination
 
-Pagination can be incorporated into Farm API either
+Pagination can be incorporated into a REST API either
 
-* through the use of the HTTP headers, e.g. as in [GitHub
-API](https://developer.github.com/v3/#pagination);
+* through the use of the [HTTP Range header](http://otac0n.com/blog/2012/11/21/range-header-i-choose-you.html),
+e.g. as in [GitHub API](https://developer.github.com/v3/#pagination);
 * or through the use of data envelopes.
 
-Both approaches are used in the existing REST APIs.  I prefer the former as it
-keeps row data as meta information in the headers.  I find such approach [more
-elegant](https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#pagination.
+Both approaches are used in the existing REST APIs.  
+
+I prefer the former as it keeps row data as meta information in the headers.
+I find such approach [more
+elegant](https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#pagination).
 Our implementation of pagination follows [GitHub
 API](https://developer.github.com/v3/guides/traversing-with-pagination/).
-The alternative header-based approach to pagination [relies on
-Range header](http://otac0n.com/blog/2012/11/21/range-header-i-choose-you.html). 
 
 ## Queries
 
 We offer a simple query language which is expressed in terms of URI arguments
 alone.  As a result it is intuitive and easy to use.  On a down side it is
-pretty limited to very basic queries.
+pretty limited to basic queries.
 
 ## Server
 
@@ -66,4 +66,27 @@ per-page;
 collection;
 * header Link offers URLs for the client to build a paginating GUI.
 
-## Testing Farm
+## Testing the Farm
+
+As usual we just run:
+
+```bash
+alex@latitude:~/Projects/RESTing-with-Flask/05.pagination/farm$ python3 -m unittest
+```
+
+Or just one module at a time:
+
+```bash
+alex@latitude:~/Projects/RESTing-with-Flask/05.pagination/farm$ python3 -m unittest test_farm
+alex@latitude:~/Projects/RESTing-with-Flask/05.pagination/farm$ python3 -m unittest test_restc.py
+alex@latitude:~/Projects/RESTing-with-Flask/05.pagination/farm$ python3 -m unittest app/test_dataset
+```
+
+## Stressing the farm
+
+You can now use command line client to stress the REST service:
+
+```bash
+
+```
+
