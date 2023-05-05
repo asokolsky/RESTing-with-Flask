@@ -3,13 +3,12 @@
 For development you will need:
 
 * git
-* python,
-* extra python packages (e.g. flask, argparse, etc),
+* python3 with pip3 and extra python packages (e.g. flask, argparse, etc),
 * development environment (e.g. emacs or code or PyCharm).
 
 For testing you will also need:
 
-* a web browser, e.g. chrome, maybe even with REST extensions, e.g. 
+* a web browser, e.g. chrome, maybe even with REST extensions, e.g.
 [Advanced REST Client](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo?hl=en-US)
 or [RESTClient](https://addons.mozilla.org/en-US/firefox/addon/restclient/)
 * tools like [curl](https://www.tecmint.com/linux-curl-command-examples/),
@@ -26,7 +25,7 @@ My configuration:
 Recommended ways to get git in the order of preference:
 
 * Get git from your OS vendor.
-* Download git from https://git-scm.com/downloads 
+* Download git from https://git-scm.com/downloads
 
 ## Python Installation
 
@@ -52,13 +51,11 @@ alex@latitude:~/Projects/RESTing-with-Flask$ python3 --version
 Python 3.6.8
 ```
 
-## Virtual Environment Setup
+If you have a new Linux install, just do:
 
-Virtual environment ensures isolation from the global system configuration.
-Read about it here: https://docs.python-guide.org/dev/virtualenvs/
-
-I am not using virtual environment for this project.  Yet. Feel free to use it
-though.
+```
+sudo apt install python3 python3-venv python3-pip python3-flask
+```
 
 ## Flask Installation
 
@@ -129,6 +126,27 @@ Collecting pid
   Downloading https://files.pythonhosted.org/packages/82/bc/3633e94577c0f64864684be5a73251f194fd8673fb7c1f095597ef34dbc2/pid-2.2.5-py2.py3-none-any.whl
 Installing collected packages: pid
 Successfully installed pid-2.2.5
+```
+
+## Virtual Environment Setup
+
+Virtual environment ensures isolation from the global system configuration.
+Read about it here: https://docs.python-guide.org/dev/virtualenvs/
+
+I am not using virtual environment for this project.
+Feel free to use it though.
+It is especially beneficial if you intend to pack the service into a Docker container:
+
+```
+alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > python3 -m venv venv
+alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > source ./venv/bin/activate
+(venv) alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > pip3 install flask requests
+```
+
+After you download all the packages:
+
+```
+alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > pip3 freeze > requirements.txt
 ```
 
 ## Development Environment Setup - Visual Studio Code

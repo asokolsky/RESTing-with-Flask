@@ -16,7 +16,9 @@ Tutorial](https://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-he
 
 Start with this:
 
-```bash
+cd to this directory:
+
+```
 alex@latitude:~/Projects/RESTing-with-Flask/01.flask$ cd helloworld/
 alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ ls -la
 total 32
@@ -28,6 +30,10 @@ drwxrwxr-x 2 alex alex 4096 May 24 15:03 conf
 drwxr-xr-x 2 alex alex 4096 Nov 23  2019 __pycache__
 -rw-r--r-- 1 alex alex 3617 May 24 15:12 README.md
 -rw-r--r-- 1 alex alex 1225 Sep 21  2019 restc.py
+```
+Then run:
+
+```
 alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ ./helloworld -h
 usage: helloworld [-h] [-c CONFIG] [-v] {start,get} ...
 
@@ -56,7 +62,7 @@ optional arguments:
 
 To start the server just do:
 
-```bash
+```
 alex@latitude:~/Projects/RESTing-with-Flask/01.flask/helloworld$ ./helloworld start
 Starting service pid 21804
 Loading config from helloworld.cfg ...

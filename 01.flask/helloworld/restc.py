@@ -1,5 +1,7 @@
 from requests import Session
 from urllib.parse import urljoin
+from typing import Any, Tuple
+
 
 class rest_client:
     '''
@@ -7,30 +9,30 @@ class rest_client:
     I prefer the second option because:
     it allows to make multiple requests over the same pair of the connected
     sockets. Not only it is more efficient but also allows to carry
-    authentication inforamtion. No that this is important.  At least not yet.
+    authentication information. No that this is important.  At least not yet.
     '''
 
-    def __init__(self, siface, sport, verbose):
+    def __init__(self, iface: str, port: int, verbose: bool) -> None:
         '''
-        In:
-        siface - server interface, or host name
-        sport - server port
+        In: iface - server interface, or host name
+            sport - server port
         '''
-        self.base_url = 'http://' + siface + ':' + str(sport)
+        self.base_url = f'http://{iface}:{port}'
         self.verbose = verbose
         self.ses = Session()
         return
 
-    def get(self, uri):
+    def get(self, uri: str) -> Tuple[int, Any]:
         '''
         Issue HTTP GET to base_url + uri
         returns (http_status, response_json)
-        Throws requests.exceptions.ConnectionError when coonnection fails
+        Throws requests.exceptions.ConnectionError when connection fails
         '''
         url = urljoin(self.base_url, uri)
         if self.verbose:
             print('HTTP GET', url, '...')
         resp = self.ses.get(url)
         if self.verbose:
-            print('HTTP GET', url, '=>', resp.status_code, ',', str(resp.json()))
+            print('HTTP GET', url, '=>', resp.status_code, ',',
+                str(resp.json()))
         return (resp.status_code, resp.json())
