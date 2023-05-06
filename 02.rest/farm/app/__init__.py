@@ -1,13 +1,17 @@
 import logging
-from logging import getLogger, CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+
+# CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+from logging import getLogger, INFO
 from os.path import abspath, join
 from flask import Flask
+from typing import Any
 
 # main application
 app = None
 log = None
 
-def create_app( cfgfile ):
+
+def create_app(cfgfile: str) -> Any:
     '''
     Create main app object, while ingesting the settings from the cfgfile
     '''
@@ -16,9 +20,10 @@ def create_app( cfgfile ):
     if app is None:
         static_folder = abspath('static')
         app = Flask(
-            'farm', #__name__,
-            static_folder = static_folder, static_url_path = '',
-            instance_path = abspath(join( __file__, '../../conf' )),
+            # __name__,
+            'farm',
+            static_folder=static_folder, static_url_path='',
+            instance_path=abspath(join(__file__, '../../conf')),
             instance_relative_config=True)
         print('Serving static content from', static_folder, '...')
         if cfgfile:
@@ -37,7 +42,8 @@ def create_app( cfgfile ):
 
     return app
 
-def init_app( app ):
+
+def init_app(app):
     assert app is not None
     print('Initializing...')
     from . import routes

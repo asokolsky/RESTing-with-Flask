@@ -34,5 +34,5 @@ class rest_client:
         resp = self.ses.get(url)
         if self.verbose:
             print('HTTP GET', url, '=>', resp.status_code, ',',
-                str(resp.json()))
+                  str(resp.json()))
         return (resp.status_code, resp.json())
