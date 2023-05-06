@@ -1,7 +1,7 @@
 from datetime import timedelta
 from flask import jsonify, request, url_for, make_response, Response
 from json import dumps
-from typing import Any, Dict
+from typing import Any, Dict, Tuple, Union
 
 from . import app, log
 from . import dataset
@@ -13,11 +13,11 @@ assert log is not None
 #
 # Convenience functions to return an errors
 #
-def error409(msg):
+def error409(msg: str) -> Tuple[Any, int]:
     return jsonify(http_status_code=409, text=msg), 409
 
 
-def error400(msg):
+def error400(msg: str) -> Tuple[Any, int]:
     return jsonify(http_status_code=400, text=msg), 400
 
 
@@ -25,7 +25,7 @@ def error400(msg):
 # Return JSON not only on valid but also for INvalid URLs
 #
 @app.errorhandler(404)
-def not_found(e):
+def not_found(e: Any) -> Tuple[Any, int]:
     return jsonify(http_status_code=404, text=str(e)), 404
 
 
@@ -33,7 +33,7 @@ def not_found(e):
 # Animal Collection APIs
 #
 @app.route('/api/v1/animal', methods=['GET', 'POST'])
-def api_animals() -> Response:
+def api_animals() -> Union[Response, Tuple[Any, int]]:
     if request.method == 'GET':
         # get all the animals
         res = []
@@ -74,7 +74,7 @@ def api_animals() -> Response:
 
 
 @app.route('/api/v1/animal/<id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])
-def api_animal(id: str) -> Response:
+def api_animal(id: str) -> Union[Response, Tuple[Any, int]]:
     dat = dataset.theAnimals.get(id)
     if dat is None:
         return not_found('No such animal: ' + id)

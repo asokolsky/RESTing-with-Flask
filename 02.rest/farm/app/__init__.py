@@ -1,17 +1,17 @@
-import logging
 
-# CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
-from logging import getLogger, INFO
-from os.path import abspath, join
 from flask import Flask
-from typing import Any
+import logging
+# CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+from logging import getLogger, INFO, Logger
+from os.path import abspath, join
+from typing import Optional
 
 # main application
-app = None
-log = None
+app: Optional[Flask] = None
+log: Optional[Logger] = None
 
 
-def create_app(cfgfile: str) -> Any:
+def create_app(cfgfile: str) -> Flask:
     '''
     Create main app object, while ingesting the settings from the cfgfile
     '''
@@ -43,7 +43,7 @@ def create_app(cfgfile: str) -> Any:
     return app
 
 
-def init_app(app):
+def init_app(app: Flask) -> None:
     assert app is not None
     print('Initializing...')
     from . import routes

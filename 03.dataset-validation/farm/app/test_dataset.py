@@ -8,14 +8,15 @@
 import unittest
 from schema import (
     Schema,
-    SchemaError,
-    Use,
+    # SchemaError,
+    # Use,
 )
 
-from dataset import DataSet
+from .dataset import DataSet
 
 # create benign Schema
 NoSchema = Schema(object)
+
 
 class TestDataset(unittest.TestCase):
 
@@ -39,7 +40,7 @@ class TestDataset(unittest.TestCase):
         self.assertEqual(len(self.ds.data), 0)
 
         key = "1"
-        d = {"a":"b"}
+        d = {"a": "b"}
 
         self.assertTrue(self.ds.put(key, d))
 
@@ -50,12 +51,13 @@ class TestDataset(unittest.TestCase):
 
         r = self.ds.pop(key)
         self.assertEqual(r, d)
-        
+
         self.assertEqual(len(self.ds.data), 0)
 
         r = self.ds.pop(key)
         self.assertEqual(r, None)
         return
+
 
 if __name__ == '__main__':
     unittest.main()

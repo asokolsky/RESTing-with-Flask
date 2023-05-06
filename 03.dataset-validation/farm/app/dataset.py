@@ -1,4 +1,5 @@
-from farm_schema import AnimalSchema
+from .farm_schema import AnimalSchema
+
 
 class DataSet:
     '''

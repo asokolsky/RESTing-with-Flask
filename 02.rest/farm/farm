@@ -37,7 +37,7 @@ def farm_start(options: Namespace) -> None:
     print('Starting farm pid', str(getpid()))
     app = create_app(options.config)
     iface = app.config.get('FARM_IF')
-    port = int(app.config.get('FARM_PORT'))
+    port = int(str(app.config.get('FARM_PORT')))
     init_app(app)
     try:
         app.run(
@@ -62,8 +62,8 @@ def build_client(options: Namespace) -> rest_client:
     '''
 
     app = create_app(options.config)
-    iface = app.config.get('FARM_IF')
-    port = app.config.get('FARM_PORT')
+    iface = str(app.config.get('FARM_IF'))
+    port = int(str(app.config.get('FARM_PORT')))
     return rest_client(iface, port, options.verbose, options.include)
 
 

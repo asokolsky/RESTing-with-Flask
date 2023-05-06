@@ -1,16 +1,21 @@
 # For relative imports to work in Python 3.6
-import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-import logging
-from logging import getLogger, CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
-from os.path import abspath, join
 from flask import Flask
+import logging
+# getLogger, CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET
+from logging import Logger, INFO
+import os
+from os.path import abspath, join
+import sys
+from typing import Optional
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 # main application
-app = None
-log = None
+app: Optional[Flask] = None
+log: Optional[Logger] = None
 
-def create_app( cfgfile ):
+
+def create_app(cfgfile: str) -> Flask:
     '''
     Create main app object, while ingesting the settings from the cfgfile
     '''
@@ -18,9 +23,9 @@ def create_app( cfgfile ):
     if app is None:
         static_folder = abspath('static')
         app = Flask(
-            'farm', #__name__,
+            'farm',
             static_folder=static_folder, static_url_path='',
-            instance_path=abspath(join( __file__, '../../conf' )),
+            instance_path=abspath(join(__file__, '../../conf')),
             instance_relative_config=True)
         print('Serving static content from', static_folder, '...')
         if cfgfile:
@@ -29,7 +34,8 @@ def create_app( cfgfile ):
 
     return app
 
-def init_app( app ):
+
+def init_app(app: Flask) -> None:
     assert app is not None
     print('Initializing...')
     global log
@@ -43,10 +49,10 @@ def init_app( app ):
         logging.basicConfig(format=mfmt, datefmt="%Y%m%d.%H%M%S")
 
         # this logger will be created only when the first message is logged
-        wlog = logging.getLogger("werkzeug")
-        #wlog.disabled = True
+        # wlog = logging.getLogger("werkzeug")
+        # wlog.disabled = True
 
-        #log = getLogger()
+        # log = getLogger()
         log = app.logger
         print('Using:', str(log))
 
@@ -56,7 +62,8 @@ def init_app( app ):
             log.setLevel(iLevel)
             print('Logging level set to', iLevel, level)
 
-        loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
+        loggers = [logging.getLogger(name) for name in
+                   logging.root.manager.loggerDict]
         print('Loggers:', str(loggers))
 
     from . import routes

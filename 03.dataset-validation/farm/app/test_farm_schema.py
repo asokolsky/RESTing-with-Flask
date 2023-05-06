@@ -7,17 +7,18 @@
 
 import unittest
 from schema import (
-    And,
-    Const,
-    Optional,
-    Or,
-    Regex,
-    Schema,
+    # And,
+    # Const,
+    # Optional,
+    # Or,
+    # Regex,
+    # Schema,
     SchemaError,
-    Use,
+    # Use,
 )
 
-from farm_schema import AnimalSchema, SchemaEnumError
+from .farm_schema import AnimalSchema
+
 
 class TestFarmSchema(unittest.TestCase):
 
@@ -85,6 +86,7 @@ class TestFarmSchema(unittest.TestCase):
             AnimalSchema.validate(d)
 
         return
+
 
 if __name__ == '__main__':
     unittest.main()
