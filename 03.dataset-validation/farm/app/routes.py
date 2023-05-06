@@ -12,8 +12,7 @@ from schema import (
     # SchemaWrongKeyError,
 )
 
-from . import app, log
-from . import dataset
+from . import app, log, dataset
 
 assert app is not None
 assert log is not None
@@ -139,7 +138,7 @@ def api_animal(id: str) -> Union[Response, Tuple[Any, int]]:
 
 
 @app.route('/api/v1/_conf', methods=['GET'])
-def api_conf():
+def api_conf() -> Dict[str, Any]:
     res: Dict[str, Any] = {}
     for k, v in app.config.items():
         if k == 'SECRET_KEY':

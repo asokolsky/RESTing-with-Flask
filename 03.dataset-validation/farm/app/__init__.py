@@ -42,7 +42,8 @@ def init_app(app: Flask) -> None:
     if log is None:
         #
         # what a mess: https://github.com/pallets/flask/issues/2998
-        # more in-depth: https://www.scalyr.com/blog/getting-started-quickly-with-flask-logging/
+        # more in-depth:
+        # https://www.scalyr.com/blog/getting-started-quickly-with-flask-logging/
         #
         app.logger.info('Starting farm service...')
         mfmt = "%(asctime)s.%(msecs)03d [%(levelno)s] [%(thread)d] %(filename)s:%(lineno)s %(message)s"

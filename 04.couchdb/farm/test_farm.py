@@ -9,13 +9,19 @@
 
 import unittest
 import random
-from uuid import uuid4 
+from uuid import uuid4
 from json import loads
+from typing import Any, List
 
-from app import app, create_app, init_app
+from app import create_app, init_app
 
-def get_random(ar):
+
+def get_random(ar: List[Any]) -> Any:
+    '''
+    Get a random element of the array
+    '''
     return ar[random.randint(0, len(ar)-1)]
+
 
 class TestFarm(unittest.TestCase):
     '''
@@ -87,13 +93,13 @@ class TestFarm(unittest.TestCase):
               'skinny', 'lady', 'sixfinger', 'handsome', 'proud', 'steady',
               'blond']
         n2 = ['bella', 'coco', 'max', 'buddy', 'daisy', 'lola', 'luna',
-              'lucy', 'harley', 'charlie', 'pepper', 'shadow', 'gracie', 'jack',
-              'milo', 'rocky', 'sadie', 'stella']
+              'lucy', 'harley', 'charlie', 'pepper', 'shadow', 'gracie',
+              'jack', 'milo', 'rocky', 'sadie', 'stella']
         name = get_random(n1) + ' ' + get_random(n2)
         ad = {
-            'id' : str(uuid4()),
+            'id': str(uuid4()),
             'species': get_random(['chicken', 'cow']),
-            'name' : name,
+            'name': name,
             'sex': get_random(['female', 'male'])
         }
         return ad
@@ -111,7 +117,7 @@ class TestFarm(unittest.TestCase):
         uri = 'animal'
         resp = self.get(uri)
         self.assertEqual(resp.status_code, 200)
-        #return resp.get_data()
+        # return resp.get_data()
         # return resp.json()
         return loads(resp.get_data(as_text=True))
 
@@ -165,6 +171,7 @@ class TestFarm(unittest.TestCase):
         resp = self.post('animal', ad)
         self.assertEqual(resp.status_code, 409)
         return
+
 
 if __name__ == '__main__':
     unittest.main()

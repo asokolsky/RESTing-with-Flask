@@ -5,9 +5,10 @@
 #  python3 -m unittest test_restc -v
 #
 
-import unittest
-import restc
 from json import loads
+import unittest
+
+import restc
 
 
 class TestRestC(unittest.TestCase):

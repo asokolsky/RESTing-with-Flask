@@ -5,12 +5,8 @@
 #  python3 -m unittest test_dataset -v
 #
 
+from schema import Schema
 import unittest
-from schema import (
-    Schema,
-    # SchemaError,
-    # Use,
-)
 
 from .dataset import DataSet
 

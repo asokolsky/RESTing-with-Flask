@@ -6,16 +6,7 @@
 #
 
 import unittest
-from schema import (
-    # And,
-    # Const,
-    # Optional,
-    # Or,
-    # Regex,
-    # Schema,
-    SchemaError,
-    # Use,
-)
+from schema import SchemaError
 
 from .farm_schema import AnimalSchema
 

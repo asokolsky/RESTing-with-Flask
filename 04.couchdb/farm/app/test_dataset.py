@@ -4,21 +4,20 @@
 # Launch it by issuing:
 #  python3 -m unittest test_dataset -v
 #
-import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-import unittest
 import random
-from schema import (
-    Schema,
-    #SchemaError,
-    #Use,
-)
-from dataset import DataSetRAM
+# import os
+# import sys
+from schema import Schema
+import unittest
 
-from . import app, log, create_app, init_app
+from .dataset import DataSetRAM
+
+from . import create_app, init_app
+# sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 # create benign Schema
 NoSchema = Schema(object)
+
 
 class TestDataset(unittest.TestCase):
 
@@ -47,7 +46,7 @@ class TestDataset(unittest.TestCase):
         return
 
     @classmethod
-    def tearDownClass( cls ):
+    def tearDownClass(cls):
         '''
         Once for all the tests in this module..
         '''
@@ -75,7 +74,7 @@ class TestDataset(unittest.TestCase):
         self.assertEqual(len(self.ds.data), 0)
 
         key = "1"
-        d = {"a":"b"}
+        d = {"a": "b"}
 
         self.assertTrue(self.ds.put(key, d))
 
@@ -86,12 +85,13 @@ class TestDataset(unittest.TestCase):
 
         r = self.ds.pop(key)
         self.assertEqual(r, d)
-        
+
         self.assertEqual(len(self.ds.data), 0)
 
         r = self.ds.pop(key)
         self.assertEqual(r, None)
         return
+
 
 if __name__ == '__main__':
     unittest.main()

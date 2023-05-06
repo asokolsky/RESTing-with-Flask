@@ -1,14 +1,19 @@
 # For relative imports to work in Python 3.6
-import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-from os.path import abspath, join
 from flask import Flask
+from logging import Logger
+import os
+from os.path import abspath, join
+import sys
+from typing import Optional
+
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 # main application
-app = None
-log = None
+app: Optional[Flask] = None
+log: Optional[Logger] = None
 
-def create_app( cfgfile ):
+
+def create_app(cfgfile: str) -> Flask:
     '''
     Create main app object, while ingesting the settings from the cfgfile
     '''
@@ -16,9 +21,9 @@ def create_app( cfgfile ):
     if app is None:
         static_folder = abspath('static')
         app = Flask(
-            'farm', #__name__,
+            'farm',
             static_folder=static_folder, static_url_path='',
-            instance_path=abspath(join( __file__, '../../conf' )),
+            instance_path=abspath(join(__file__, '../../conf')),
             instance_relative_config=True)
         print('Serving static content from', static_folder, '...')
         if cfgfile:
@@ -28,17 +33,18 @@ def create_app( cfgfile ):
         from .logger import create_log
         global log
         if log is None:
-            log = create_log( app )
-    
+            log = create_log(app)
+
     return app
 
-def init_app( app ):
+
+def init_app(app: Flask) -> bool:
     '''
     Get the app ready to serve HTTP requests
     '''
     assert app is not None
     print('Initializing...')
-    
+
     from . import routes
     from . import dataset
 

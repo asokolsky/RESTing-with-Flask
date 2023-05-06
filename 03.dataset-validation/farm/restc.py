@@ -24,7 +24,7 @@ class rest_client:
         self.ses = Session()
         return
 
-    def close(self):
+    def close(self) -> None:
         '''
         Close the underlying TCP connection
         '''
@@ -59,9 +59,9 @@ class rest_client:
         self.print_req('GET', url, None)
         resp = self.ses.get(url)
         self.print_resp('GET', resp)
-        return (resp.status_code, resp.json())
+        return resp.status_code, resp.json()
 
-    def post(self, uri: str, data: Any):
+    def post(self, uri: str, data: Any) -> Tuple[int, Any]:
         '''
         Issue HTTP POST to a base_url + uri
         returns (http_status, response_json)
@@ -71,7 +71,7 @@ class rest_client:
         self.print_req('POST', url, data)
         resp = self.ses.post(url, json=data)
         self.print_resp('POST', resp)
-        return (resp.status_code, resp.json())
+        return resp.status_code, resp.json()
 
     def delete(self, uri: str) -> Tuple[int, Any]:
         '''
@@ -83,7 +83,7 @@ class rest_client:
         self.print_req('DELETE', url, None)
         resp = self.ses.delete(url)
         self.print_resp('DELETE', resp)
-        return (resp.status_code, resp.json())
+        return resp.status_code, resp.json()
 
     def put(self, uri: str, data: Any) -> Tuple[int, Any]:
         '''
@@ -95,7 +95,7 @@ class rest_client:
         self.print_req('PUT', url, data)
         resp = self.ses.put(url, json=data)
         self.print_resp('PUT', resp)
-        return (resp.status_code, resp.json())
+        return resp.status_code, resp.json()
 
     def patch(self, uri: str, data: Any) -> Tuple[int, Any]:
         '''
@@ -107,4 +107,4 @@ class rest_client:
         self.print_req('PATCH', url, data)
         resp = self.ses.patch(url, json=data)
         self.print_resp('PATCH', resp)
-        return (resp.status_code, resp.json())
+        return resp.status_code, resp.json()

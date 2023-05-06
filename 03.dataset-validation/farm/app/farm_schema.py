@@ -32,8 +32,8 @@ class Enum(object):
         '''
         Initialized with valid enum options
         '''
-        self.enum_elements = [(isinstance(a, str) and a.lower()) or a for a in
-                              args]
+        self.enum_elements = [
+            (isinstance(a, str) and a.lower()) or a for a in args]
         return
 
     def validate(self, data: Any) -> Any:
