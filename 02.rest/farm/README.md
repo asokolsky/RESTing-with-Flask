@@ -295,15 +295,16 @@ HTTP Response Headers:
 Ran 6 tests in 1.056s
 
 OK
-alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ 
+alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$
 ```
 
 The above command looks for all the python files starting with test_ and runs
 unit test on those.
 
-Alternatively you can test one module at a time:
+Alternatively you can test one module at a time when in
+`RESTing-with-Flask/02.rest/farm`:
 
-```bash
-alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ python3 test_restc.py
-alex@latitude:~/Projects/RESTing-with-Flask/02.rest/farm$ python3 test_farm.py
+```sh
+python3 test_restc.py
+python3 test_farm.py
 ```

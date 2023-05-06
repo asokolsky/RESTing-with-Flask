@@ -44,7 +44,7 @@ def farm_start(options: Namespace) -> None:
             host=iface,
             port=port,
             threaded=True,
-            processes=1 )
+            processes=1)
 
     except KeyboardInterrupt:
         print('Ctrl-C caught in farm start, aborting.', file=sys.stderr)
@@ -77,7 +77,7 @@ def farm_get(options: Namespace) -> None:
     try:
         for uri in options.uri:
             (status_code, rdata) = cl.get(uri)
-            #print('HTTP status code:', status_code)
+            # print('HTTP status code:', status_code)
             print('got back:', dumps(rdata, indent=4))
 
     except Exception as ex:
@@ -208,7 +208,7 @@ scp_start.set_defaults(func=farm_start)
 scp_get = scp.add_parser(
     'get',
     description='Issue HTTP GET to the farm server.',
-    help='Issue GET request to the farm server.' )
+    help='Issue GET request to the farm server.')
 scp_get.add_argument('uri', nargs='+')
 scp_get.set_defaults(func=farm_get)
 
@@ -238,7 +238,8 @@ scp_animal.add_argument(
 scp_animal.add_argument(
     'data',
     nargs='+',
-    help='Animal data. Must be JSON for new (ID will be added) or animal ID for the other commands.')
+    help='''Animal data. Must be JSON for new (ID will be added) or animal ID
+for other commands.''')
 scp_animal.set_defaults(func=farm_animal)
 
 # finally, parse the command linex

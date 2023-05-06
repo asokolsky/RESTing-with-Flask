@@ -8,10 +8,11 @@
 #
 
 import unittest
-from uuid import uuid4 
+from uuid import uuid4
 from json import loads
 
-from app import app, create_app, init_app
+from app import create_app, init_app
+
 
 class TestFarm(unittest.TestCase):
 
@@ -68,8 +69,8 @@ class TestFarm(unittest.TestCase):
         uri = 'animal'
         id = str(uuid4())
         ad = {
-            'id' : id,
-            'weight' : 4500,
+            'id': id,
+            'weight': 4500,
         }
         return self.post(uri, ad)
 
@@ -80,7 +81,7 @@ class TestFarm(unittest.TestCase):
         uri = 'animal'
         resp = self.get(uri)
         self.assertEqual(resp.status_code, 200)
-        #return resp.get_data()
+        # return resp.get_data()
         # return resp.json()
         return loads(resp.get_data(as_text=True))
 
@@ -115,6 +116,7 @@ class TestFarm(unittest.TestCase):
         ans = self.get_animals()
         self.assertEqual(len(ans), iAnimals - 1)
         return
+
 
 if __name__ == '__main__':
     unittest.main()
