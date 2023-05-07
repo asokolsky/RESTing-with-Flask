@@ -114,7 +114,7 @@ def farm_post(options: Namespace) -> None:
     return
 
 
-def animal_new(cl, data, n) -> None:
+def animal_new(cl: rest_client, data: str, n: int) -> None:
     '''
     Try to create a new animal.
     In: data should be a meaningful JSON
@@ -124,15 +124,15 @@ def animal_new(cl, data, n) -> None:
         id = da.get('id', None)
         if id is None:
             da['id'] = str(uuid4())
-        (status_code, rdata) = cl.post('/api/v1/animal', da)
+        status_code, data = cl.post('/api/v1/animal', da)
         # print('HTTP status code:', status_code)
-        print('got back:', dumps(rdata, indent=4))
+        print('got back:', dumps(data, indent=4))
         if status_code != 201:
             break
     return
 
 
-def animal_get(cl, data: Any) -> Any:
+def animal_get(cl: rest_client, data: Any) -> Any:
     '''
     Retrieve an animal record.
     In: data should be ID
@@ -141,12 +141,12 @@ def animal_get(cl, data: Any) -> Any:
         uri = '/api/v1/animal'
     else:
         uri = '/api/v1/animal/' + data
-    status_code, rdata = cl.get(uri)
-    print('got back:', dumps(rdata, indent=4))
-    return rdata
+    status_code, data = cl.get(uri)
+    print('got back:', dumps(data, indent=4))
+    return data
 
 
-def animal_del(cl, data) -> None:
+def animal_del(cl: rest_client, data) -> None:
     '''
     Delete an animal record.
     In: data should be ID
@@ -156,12 +156,12 @@ def animal_del(cl, data) -> None:
         animal_del_all(cl)
         return
 
-    (status_code, rdata) = cl.delete('/api/v1/animal/' + data)
+    status_code, rdata = cl.delete('/api/v1/animal/' + data)
     print('got back:', dumps(rdata, indent=4))
     return
 
 
-def animal_del_all(cl) -> None:
+def animal_del_all(cl: rest_client) -> None:
     '''
     Delete all the known animals!
     '''
@@ -234,7 +234,6 @@ def farm_stressor(iface: str, port: int, verbose: bool,
         # print('got back:', status_code, dumps(rdata, indent=4))
     # pt2 = process_time()
     # print(getpid(), 'animal id to stress', id)
-
     return
 
 
@@ -242,7 +241,6 @@ def farm_stress(options: Namespace) -> None:
     '''
     Stress the farm server
     '''
-
     app = create_app(options.config)
     iface = app.config.get('FARM_IF')
     port = app.config.get('FARM_PORT')
@@ -252,8 +250,8 @@ def farm_stress(options: Namespace) -> None:
 
     p = Pool(processes)
     try:
-        p.starmap(farm_stressor,
-                  [(iface, port, verbose, incHeaders)] * processes)
+        p.starmap(
+            farm_stressor, [(iface, port, verbose, incHeaders)] * processes)
         p.close()
         p.join()
 

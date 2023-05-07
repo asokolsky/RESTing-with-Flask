@@ -4,36 +4,33 @@
 # Launch it by issuing:
 #  python3 -m unittest test_dataset -v
 #
-import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+# import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
+from schema import Schema
 import unittest
-from schema import (
-    Schema,
-    #SchemaError,
-    #Use,
-)
 
-from dataset import DataSetRAM
+from .dataset import DataSetRAM
 
-from . import app, log, create_app
+from . import create_app
 
 # create benign Schema
 NoSchema = Schema(object)
 
+
 class TestDataset(unittest.TestCase):
 
     @classmethod
-    def setUpClass( cls ):
+    def setUpClass(cls):
         '''
         Once for all the tests in this module..
         '''
         # create log object needed in dataset
         global app
-        app = create_app( 'farm_test.cfg' )
+        app = create_app('farm_test.cfg')
         return
 
     @classmethod
-    def tearDownClass( cls ):
+    def tearDownClass(cls):
         '''
         Once for all the tests in this module..
         '''
@@ -62,7 +59,7 @@ class TestDataset(unittest.TestCase):
         self.assertEqual(len(self.ds.data), 0)
 
         key = "1"
-        d = {"a":"b"}
+        d = {"a": "b"}
 
         self.assertTrue(self.ds.put(key, d))
 
@@ -73,12 +70,13 @@ class TestDataset(unittest.TestCase):
 
         r = self.ds.pop(key)
         self.assertEqual(r, d)
-        
+
         self.assertEqual(len(self.ds.data), 0)
 
         r = self.ds.pop(key)
         self.assertEqual(r, None)
         return
+
 
 if __name__ == '__main__':
     unittest.main()

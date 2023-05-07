@@ -1,10 +1,11 @@
-from requests import Session
 from abc import ABC, abstractmethod
+from requests import Session
 
 # For relative imports to work in Python 3.6
 # import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import os
 import sys
+
 from app.logger import log
 from .farm_schema import AnimalSchema
 

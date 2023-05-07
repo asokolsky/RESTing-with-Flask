@@ -1,13 +1,5 @@
-from schema import (
-    And,
-    #Const,
-    Optional,
-    #Or,
-    Regex,
-    Schema,
-    SchemaError,
-    Use,
-)
+from schema import And, Optional, Regex, Schema, SchemaError, Use
+
 
 #
 # Let's first improve on the schema module:
@@ -18,6 +10,7 @@ class SchemaEnumError(SchemaError):
     Is thrown when validation of an enum schema fails.
     '''
     pass
+
 
 class Enum(object):
     '''

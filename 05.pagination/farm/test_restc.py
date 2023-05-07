@@ -5,9 +5,10 @@
 #  python3 -m unittest test_restc -v
 #
 
-import unittest
-import restc
 from json import loads
+import unittest
+
+import restc
 
 
 class TestRestC(unittest.TestCase):
@@ -68,9 +69,9 @@ class TestRestC(unittest.TestCase):
         self.assertTrue(len(headers) >= 4)
         self.assertTrue('Accept' in headers)
         self.assertTrue('Accept-Encoding' in headers)
-        #self.assertTrue('Cache-Control' in headers)
+        # self.assertTrue('Cache-Control' in headers)
         self.assertTrue('Host' in headers)
-        #self.assertTrue('If-Modified-Since' in headers)
+        # self.assertTrue('If-Modified-Since' in headers)
         self.assertTrue('User-Agent' in headers)
 
         return
@@ -81,11 +82,11 @@ class TestRestC(unittest.TestCase):
         '''
         uri = '/post'
         da = {
-            'a' : 'value-of-a',
-            'b' : 1234,
-            'c' : {
-                'd' : ['I', 'love', 'REST'],
-                'e' : 'done'
+            'a': 'value-of-a',
+            'b': 1234,
+            'c': {
+                'd': ['I', 'love', 'REST'],
+                'e': 'done'
             }
         }
         (status_code, rdata) = self.cl.post(uri, da)
@@ -123,7 +124,7 @@ class TestRestC(unittest.TestCase):
         self.assertTrue('json' in rdata)
         self.assertTrue('origin' in rdata)
         self.assertTrue('url' in rdata)
-        
+
         return
 
     def test_put(self):
@@ -132,11 +133,11 @@ class TestRestC(unittest.TestCase):
         '''
         uri = '/put'
         da = {
-            'a' : 'value-of-a',
-            'b' : 1234,
-            'c' : {
-                'd' : ['I', 'love', 'REST'],
-                'e' : 'done'
+            'a': 'value-of-a',
+            'b': 1234,
+            'c': {
+                'd': ['I', 'love', 'REST'],
+                'e': 'done'
             }
         }
         (status_code, rdata) = self.cl.put(uri, da)
@@ -164,11 +165,11 @@ class TestRestC(unittest.TestCase):
         '''
         uri = '/patch'
         da = {
-            'a' : 'value-of-a',
-            'b' : 1234,
-            'c' : {
-                'd' : ['I', 'love', 'REST'],
-                'e' : 'done'
+            'a': 'value-of-a',
+            'b': 1234,
+            'c': {
+                'd': ['I', 'love', 'REST'],
+                'e': 'done'
             }
         }
         (status_code, rdata) = self.cl.patch(uri, da)
@@ -189,6 +190,7 @@ class TestRestC(unittest.TestCase):
         self.assertTrue('url' in rdata)
 
         return
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -72,7 +72,7 @@ class rest_client:
         self.print_req('POST', url, data)
         resp = self.ses.post(url, json=data)
         self.print_resp('POST', resp)
-        return (resp.status_code, resp.json())
+        return resp.status_code, resp.json()
 
     def delete(self, uri: str) -> Tuple[int, Any]:
         '''

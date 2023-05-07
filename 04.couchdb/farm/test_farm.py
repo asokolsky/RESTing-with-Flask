@@ -7,11 +7,11 @@
 #  alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_farm.py
 #
 
-import unittest
-import random
-from uuid import uuid4
 from json import loads
+import random
 from typing import Any, List
+import unittest
+from uuid import uuid4
 
 from app import create_app, init_app
 
