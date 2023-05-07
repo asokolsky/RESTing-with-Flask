@@ -7,15 +7,21 @@
 #  alex@latitude:~/Projects/RESTing-with-Flask/02/farm$ python3 test_farm.py
 #
 
-import unittest
-import random
-from uuid import uuid4 
 from json import loads
+import random
+from typing import Any, List
+import unittest
+from uuid import uuid4
 
 from app import app_configure, app_initialize
 
-def get_random(ar):
+
+def get_random(ar: List[Any]) -> Any:
+    '''
+    Get a random element of the array
+    '''
     return ar[random.randint(0, len(ar)-1)]
+
 
 class TestFarm(unittest.TestCase):
 
@@ -77,13 +83,13 @@ class TestFarm(unittest.TestCase):
               'skinny', 'lady', 'sixfinger', 'handsome', 'proud', 'steady',
               'blond']
         n2 = ['bella', 'coco', 'max', 'buddy', 'daisy', 'lola', 'luna', 'lucy',
-              'harley', 'charlie', 'pepper', 'shadow', 'gracie', 'jack', 'milo',
-              'rocky', 'sadie', 'stella']
+              'harley', 'charlie', 'pepper', 'shadow', 'gracie', 'jack',
+              'milo', 'rocky', 'sadie', 'stella']
         name = get_random(n1) + ' ' + get_random(n2)
         ad = {
-            'id' : str(uuid4()),
+            'id': str(uuid4()),
             'species': get_random(['chicken', 'cow']),
-            'name' : name,
+            'name': name,
             'sex': get_random(['female', 'male'])
         }
         return ad
@@ -101,7 +107,7 @@ class TestFarm(unittest.TestCase):
         uri = 'animal'
         resp = self.get(uri)
         self.assertEqual(resp.status_code, 200)
-        #return resp.get_data()
+        # return resp.get_data()
         # return resp.json()
         return loads(resp.get_data(as_text=True))
 
@@ -163,10 +169,10 @@ class TestFarm(unittest.TestCase):
         resp = self.get(uri)
         self.assertEqual(resp.status_code, 200)
         dat = loads(resp.get_data(as_text=True))
-        self.assertEqual(dat[ 'name' ], 'farm')
+        self.assertEqual(dat['name'], 'farm')
         self.assertTrue(dat.get('version', None) is not None)
-
         return
+
 
 if __name__ == '__main__':
     unittest.main()

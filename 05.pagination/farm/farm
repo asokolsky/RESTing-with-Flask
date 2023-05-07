@@ -266,7 +266,6 @@ def farm_stressor(iface: str, port: int, verbose: bool,
         # print('got back:', status_code, dumps(rdata, indent=4))
     # pt2 = process_time()
     # print(getpid(), 'animal id to stress', id)
-
     return
 
 

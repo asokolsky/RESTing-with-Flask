@@ -1,17 +1,20 @@
+from abc import ABC, abstractmethod
 from requests import Session
-from abc import ABC, abstractmethod 
-from farm_schema import AnimalSchema
-
-# For relative imports to work in Python 3.6
-#import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 import os
 import sys
+
+from .farm_schema import AnimalSchema
+
+# For relative imports to work in Python 3.6
+# import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from app import log
+
 assert log is not None
+
 
 class DataSet(ABC):
     '''
@@ -46,7 +49,7 @@ class DataSet(ABC):
         '''
         if not self.schema.validate(dat):
             return False
-        
+
         return self.put_(id, dat)
 
     @abstractmethod
@@ -87,7 +90,7 @@ class DataSetRAM(DataSet):
             name - dataset name - e.g. 'animal'
             schema - dataset schema
         '''
-        super().__init__(name, schema) 
+        super().__init__(name, schema)
         self.data = dict()
         return
 
@@ -96,7 +99,7 @@ class DataSetRAM(DataSet):
         Access the record by id
         '''
         return self.data.get(id, None)
-        
+
     def put_(self, id, dat):
         '''
         Stores data into the dataset
@@ -146,26 +149,26 @@ class DataSetCouchDB(DataSet):
         url = self.url + '/' + self.db_name
         resp = self.ses.head(url)
         log.info('ses.head(%s) => %d', url, resp.status_code)
-        if(resp.status_code == 404):
+        if resp.status_code == 404:
             #
             # database does not exist - create it!
             #
             resp = self.ses.put(url)
             log.info('ses.put(%s) => %d', url, resp.status_code)
-            if(resp.status_code == 201):
+            if resp.status_code == 201:
                 # created!
                 self.db_exists = True
                 pass
-            elif(resp.status_code == 400):
+            elif resp.status_code == 400:
                 # bad db name
                 pass
-            elif(resp.status_code == 401):
+            elif resp.status_code == 401:
                 # unauthorized
                 pass
-            elif(resp.status_code == 412):
+            elif resp.status_code == 412:
                 # db already exists!
                 pass
-        elif(resp.status_code == 200):
+        elif resp.status_code == 200:
             # database does exist - we're good!
             self.db_exists = True
         else:
@@ -176,19 +179,19 @@ class DataSetCouchDB(DataSet):
         '''
         Access the record by id
         '''
-        if(not self.db_exists):
+        if not self.db_exists:
             return None
 
         url = self.url + '/' + self.db_name + '/' + id
         resp = self.ses.get(url)
         log.debug('ses.get(%s) => %d', url, resp.status_code)
-        if(resp.status_code != 200):
+        if resp.status_code != 200:
             return None
         res = resp.json()
-        del res[ '_id' ]
-        del res[ '_rev' ]
+        del res['_id']
+        del res['_rev']
         log.info('get(%s) => %s', id, str(res))
-        return res 
+        return res
 
     def put_(self, id, dat):
         '''
@@ -199,15 +202,15 @@ class DataSetCouchDB(DataSet):
         May throw:
             Error
         '''
-        if(not self.db_exists):
+        if not self.db_exists:
             return None
         url = self.url + '/' + self.db_name + '/' + id
         resp = self.ses.put(url, json=dat)
         log.debug('ses.put(%s, %s) => %d', url, str(dat), resp.status_code)
-        if(resp.status_code == 201):
+        if resp.status_code == 201:
             log.info('put_(%s) => %s', id, str(dat))
             return dat
-        elif(resp.status_code == 202):
+        elif resp.status_code == 202:
             log.info('put_(%s) => %s', id, str(dat))
             return dat
         log.info('put_(%s) => None', id)
@@ -218,13 +221,13 @@ class DataSetCouchDB(DataSet):
         Removes the record identified by id from the dataset.
         Returns the data (if found) or None.
         '''
-        if(not self.db_exists):
+        if not self.db_exists:
             return None
         url = self.url + '/' + self.db_name + '/' + id
         # first get it from the DB
         resp = self.ses.get(url)
         log.debug('ses.get(%s) => %d', url, resp.status_code)
-        if(resp.status_code != 200):
+        if resp.status_code != 200:
             return None
         res = resp.json()
         del res['_id']
@@ -237,26 +240,27 @@ class DataSetCouchDB(DataSet):
         resp = self.ses.delete(url)
         log.debug('ses.delete(%s) => %d', url, resp.status_code)
         log.info('pop(%s) => %s', id, str(res))
-        return res 
+        return res
 
     def ids(self):
         '''
         Returns iterator by all doc ids
         '''
-        if(not self.db_exists):
+        if not self.db_exists:
             return []
         # get the list of all the docs from the DB
         url = self.url + '/' + self.db_name + '/_all_docs'
         resp = self.ses.get(url)
         log.debug('ses.get(%s) => %d', url, resp.status_code)
-        if(resp.status_code != 200):
+        if resp.status_code != 200:
             return []
         res = resp.json()
-        return [ row['id'] for row in res.get('rows', []) ]
+        return [row['id'] for row in res.get('rows', [])]
 
 
 # we will be storing animals here
 theAnimals = None
+
 
 def init_dataset(aconfig):
     '''
@@ -269,12 +273,12 @@ def init_dataset(aconfig):
     '''
     global theAnimals
     dstore = aconfig.get('DATASTORE')
-    if(dstore == 'RAM'):
+    if dstore == 'RAM':
         log.info('DATASTORE is RAM')
         theAnimals = DataSetRAM('animal', AnimalSchema)
         return True
 
-    elif(dstore == 'CouchDB'):
+    elif dstore == 'CouchDB':
         log.info('DATASTORE is CouchDB')
         url = aconfig.get('COUCHDB_URL')
         if not url:

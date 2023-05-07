@@ -1,37 +1,30 @@
-# For relative imports to work in Python 3.6
-import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
-import logging
-from logging import (
-    getLogger, 
-    #CRITICAL, 
-    #ERROR, 
-    #WARNING, 
-    INFO, 
-    #DEBUG, 
-    #NOTSET
-)
-from os.path import abspath, join
 from flask import Flask
+import logging
+from logging import getLogger, INFO
+from os.path import abspath, join
+
+# For relative imports to work in Python 3.6
+# import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 
 from .metrics import setup_metrics
 
-__version__='2019.12.08'
+__version__ = '2019.12.08'
 
 # main application
 app = Flask(
-    'farm', #__name__,
-    static_folder=abspath(join( __file__, '../../static' )),
+    'farm',
+    static_folder=abspath(join(__file__, '../../static')),
     static_url_path='',
-    instance_path=abspath(join( __file__, '../../conf' )),
+    instance_path=abspath(join(__file__, '../../conf')),
     instance_relative_config=True)
 setup_metrics(app)
 
-#print('__init__.py: app created')
+# print('__init__.py: app created')
 
 mfmt = "%(asctime)s.%(msecs)03d [%(levelno)s] [%(thread)d] %(filename)s:%(lineno)s %(message)s"
 logging.basicConfig(format=mfmt, datefmt="%Y%m%d.%H%M%S")
 log = getLogger()
+
 
 def app_configure(cfgfile):
     '''
@@ -51,6 +44,7 @@ def app_configure(cfgfile):
         log.setLevel(iLevel)
         print('Logging level set to', iLevel, level)
     return app
+
 
 def app_initialize():
     '''

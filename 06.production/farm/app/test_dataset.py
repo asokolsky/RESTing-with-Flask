@@ -5,17 +5,14 @@
 #  python3 -m unittest test_dataset -v
 #
 
+from schema import Schema
 import unittest
-from schema import (
-    Schema,
-    #SchemaError,
-    #Use,
-)
 
-from dataset import DataSetRAM
+from .dataset import DataSetRAM
 
 # create benign Schema
 NoSchema = Schema(object)
+
 
 class TestDataset(unittest.TestCase):
 
@@ -50,12 +47,13 @@ class TestDataset(unittest.TestCase):
 
         r = self.ds.pop(key)
         self.assertEqual(r, d)
-        
+
         self.assertEqual(len(self.ds.data), 0)
 
         r = self.ds.pop(key)
         self.assertEqual(r, None)
         return
+
 
 if __name__ == '__main__':
     unittest.main()
