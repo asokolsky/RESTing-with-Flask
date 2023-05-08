@@ -36,7 +36,8 @@ def on_req_end(response: Response) -> Response:
     resp_time = time.time() - request.start_time
     rpath = request.reported_path
     REQUEST_LATENCY.labels('farm', rpath).observe(resp_time)
-    REQUEST_COUNT.labels('farm', request.method, rpath, response.status_code).inc()
+    REQUEST_COUNT.labels(
+        'farm', request.method, rpath, response.status_code).inc()
     return response
 
 

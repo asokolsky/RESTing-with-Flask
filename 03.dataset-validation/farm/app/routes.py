@@ -2,15 +2,8 @@ import datetime
 # import sys
 from flask import jsonify, request, url_for, make_response, Response
 from json import dumps
+from schema import SchemaError
 from typing import Any, Dict, Tuple, Union
-from schema import (
-    # Schema,
-    SchemaError,
-    # SchemaForbiddenKeyError,
-    # SchemaMissingKeyError,
-    # SchemaUnexpectedTypeError,
-    # SchemaWrongKeyError,
-)
 
 from . import app, log, dataset
 
@@ -101,8 +94,8 @@ def api_animal(id: str) -> Union[Response, Tuple[Any, int]]:
     if request.method == 'DELETE':
         dat = dataset.theAnimals.pop(id)
         assert dat is not None
-        res: Dict[str, Any] = {}
-        return jsonify(res)
+        # res: Dict[str, Any] = {}
+        return jsonify({})
 
     # , cache=False
     rd = request.get_json(force=True, silent=True)
@@ -138,7 +131,7 @@ def api_animal(id: str) -> Union[Response, Tuple[Any, int]]:
 
 
 @app.route('/api/v1/_conf', methods=['GET'])
-def api_conf() -> Dict[str, Any]:
+def api_conf() -> Response:
     res: Dict[str, Any] = {}
     for k, v in app.config.items():
         if k == 'SECRET_KEY':

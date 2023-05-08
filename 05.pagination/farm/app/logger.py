@@ -1,17 +1,11 @@
+from flask import Flask
 import logging
-from logging import (
-    #getLogger, 
-    #CRITICAL, 
-    #ERROR, 
-    #WARNING, 
-    INFO, 
-    #DEBUG, 
-    #NOTSET
-)
+from logging import Logger, INFO
 
 log = None
 
-def create_log( app ):
+
+def create_log(app: Flask) -> Logger:
     '''
     Setup app logging
     '''
@@ -21,10 +15,10 @@ def create_log( app ):
 
     # this logger will be created only when the first message is logged
 
-    #wlog.disabled = True
+    # wlog.disabled = True
 
     global log
-    #log = getLogger()
+    # log = getLogger()
     log = app.logger
     print('Using:', str(log))
 
@@ -34,6 +28,8 @@ def create_log( app ):
         log.setLevel(iLevel)
         print('Logging level set to', iLevel, level)
 
-    loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
-    #print('Loggers:', str(loggers))
+    loggers = [
+        logging.getLogger(name) for name in logging.root.manager.loggerDict
+    ]
+    print('Loggers:', str(loggers))
     return log

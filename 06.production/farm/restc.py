@@ -1,6 +1,7 @@
 from requests import Session
 from urllib.parse import urljoin
 
+
 class rest_client:
     '''
     HTTP client can use requests.request or requests.Session.
@@ -39,7 +40,8 @@ class rest_client:
 
     def print_resp(self, method, resp):
         if self.verbose:
-            print('HTTP', method, '=>', resp.status_code, ',', str(resp.json()))
+            print('HTTP', method, '=>', resp.status_code, ',',
+                  str(resp.json()))
         if self.dumpHeaders:
             print('HTTP Response Headers:')
             for h in resp.headers:

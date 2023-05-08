@@ -241,7 +241,7 @@ def farm_stress(options: Namespace) -> None:
     '''
     Stress the farm server
     '''
-    #app = create_app(options.config)
+    # app = create_app(options.config)
     iface = app.config.get('FARM_IF')
     port = app.config.get('FARM_PORT')
     verbose = options.verbose

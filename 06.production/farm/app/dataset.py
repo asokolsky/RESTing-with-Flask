@@ -4,14 +4,15 @@ import os
 import sys
 
 from .farm_schema import AnimalSchema
+from . import log
 
 # For relative imports to work in Python 3.6
 # import os, sys; sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 PACKAGE_PARENT = '..'
-SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+SCRIPT_DIR = os.path.dirname(
+    os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from app import log
 
 assert log is not None
 
