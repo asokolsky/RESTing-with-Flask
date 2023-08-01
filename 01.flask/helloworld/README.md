@@ -1,7 +1,7 @@
 ## Common Client/Server Configuration
 
 Folder conf contains configuration files.  Default configuration file name is
-helloworld.cfg.  This file is read by both the server and the client - after
+`helloworld.cfg`.  This file is read by both the server and the client - after
 all both need to know where the server is located.
 
 ## Server
@@ -100,7 +100,7 @@ specified in the configuration file - defaults to http://127.0.0.1:44444
 Alternatively you can use python helloworld client implemented in:
 
 * launcher helloworld and
-* restc.py
+* `restc.py`
 
 ### Using HelloWorld Client
 
