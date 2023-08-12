@@ -72,7 +72,10 @@ alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > source ./venv/bi
 (venv) alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > pip3 install flask requests
 ```
 
-After you download all the packages:
+Alternatively, if there is a requirements.txt available you can use `pip3 install -r requirements.txt` instead of `pip3 install flask requests`.
+
+
+After you download all the packages (if you did not already have requirements.txt):
 
 ```
 alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > pip3 freeze > requirements.txt
