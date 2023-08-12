@@ -2,7 +2,7 @@
 # Entry point for the WSGI server
 #
 from os import getenv
-from . import app, app_configure, app_initialize
+from . import app_configure, app_initialize
 
 # print('wsgi.py', __name__)
 if __name__ == 'app.wsgi':

@@ -2,8 +2,8 @@ import datetime
 from flask import jsonify, request, url_for, make_response, Response
 from flask.wrappers import Request
 from json import dumps
-from typing import Any, Dict, Tuple, Union
 from schema import SchemaError
+from typing import Any, Tuple, Union
 
 from . import app, log, dataset
 
@@ -26,7 +26,7 @@ def error400(msg: str) -> Tuple[Any, int]:
 # Return JSON not only on valid but also for INvalid URLs
 #
 @app.errorhandler(404)
-def not_found(e):
+def not_found(e) -> Tuple[Any, int]:
     return jsonify(http_status_code=404, text=str(e)), 404
 
 

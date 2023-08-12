@@ -36,7 +36,7 @@ class TestDataset(unittest.TestCase):
         self.assertEqual(len(self.ds.data), 0)
 
         key = "1"
-        d = {"a":"b"}
+        d = {"a": "b"}
 
         self.assertTrue(self.ds.put(key, d))
 

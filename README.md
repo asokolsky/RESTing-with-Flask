@@ -12,10 +12,9 @@ you will have to jump through more hoops.
 
 ## How to use it
 
-Open folder 00.  Read the details on the prerequisites and how to start development.
+Open folder [00.prerequisites](00.prerequisites).
+Read the details on the prerequisites and how to start the development.
 
-Then go to the next folder.
+Then go to the next folder, [01.flask](01.flask).
 
 Keep doing it until you learn all there is to learn.
-
-
