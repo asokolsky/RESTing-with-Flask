@@ -57,9 +57,33 @@ If you have a new Linux install, just do:
 sudo apt install python3 python3-venv python3-pip python3-flask
 ```
 
+## Virtual Environment Setup
+
+Virtual environment ensures isolation from the global system configuration.
+Read about it here: https://docs.python-guide.org/dev/virtualenvs/
+
+I am not using virtual environment for this project.
+Feel free to use it though.
+It is especially beneficial if you intend to pack the service into a Docker container:
+
+```
+alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > python3 -m venv venv
+alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > source ./venv/bin/activate
+(venv) alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > pip3 install flask requests
+```
+
+Alternatively, if there is a requirements.txt available you can use `pip3 install -r requirements.txt` instead of `pip3 install flask requests`.
+
+
+After you download all the packages (if you did not already have requirements.txt):
+
+```
+alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > pip3 freeze > requirements.txt
+```
+
 ## Flask Installation
 
-Once you have python3 installed, installing flask is easy:
+Once you have python3 installed and your virtual environment activated (if using), installing flask is easy:
 
 ```bash
 alex@latitude:~/Projects/RESTing-with-Flask$ flask
@@ -113,6 +137,30 @@ Preparing to unpack .../4-python3-werkzeug_0.14.1+dfsg1-1_all.deb ...
 Unpacking python3-werkzeug (0.14.1+dfsg1-1) ...
 ```
 
+If you are using MacOS, you can use `pip3`:
+```
+Andreas-MacBook-Pro:RESTing-with-Flask andreadashe$ pip3 install flask
+Collecting flask
+  Downloading Flask-2.3.2-py3-none-any.whl (96 kB)
+     |████████████████████████████████| 96 kB 1.7 MB/s 
+Collecting itsdangerous>=2.1.2
+  Using cached itsdangerous-2.1.2-py3-none-any.whl (15 kB)
+Collecting Jinja2>=3.1.2
+  Using cached Jinja2-3.1.2-py3-none-any.whl (133 kB)
+Collecting click>=8.1.3
+  Downloading click-8.1.6-py3-none-any.whl (97 kB)
+     |████████████████████████████████| 97 kB 2.2 MB/s 
+Collecting blinker>=1.6.2
+  Downloading blinker-1.6.2-py3-none-any.whl (13 kB)
+Collecting Werkzeug>=2.3.3
+  Downloading Werkzeug-2.3.6-py3-none-any.whl (242 kB)
+     |████████████████████████████████| 242 kB 2.1 MB/s 
+Collecting MarkupSafe>=2.0
+  Downloading MarkupSafe-2.1.3-cp310-cp310-macosx_10_9_x86_64.whl (13 kB)
+Installing collected packages: MarkupSafe, Werkzeug, Jinja2, itsdangerous, click, blinker, flask
+Successfully installed Jinja2-3.1.2 MarkupSafe-2.1.3 Werkzeug-2.3.6 blinker-1.6.2 click-8.1.6 flask-2.3.2 itsdangerous-2.1.2
+```
+
 ## Python Packages Installation
 
 ```bash
@@ -126,27 +174,6 @@ Collecting pid
   Downloading https://files.pythonhosted.org/packages/82/bc/3633e94577c0f64864684be5a73251f194fd8673fb7c1f095597ef34dbc2/pid-2.2.5-py2.py3-none-any.whl
 Installing collected packages: pid
 Successfully installed pid-2.2.5
-```
-
-## Virtual Environment Setup
-
-Virtual environment ensures isolation from the global system configuration.
-Read about it here: https://docs.python-guide.org/dev/virtualenvs/
-
-I am not using virtual environment for this project.
-Feel free to use it though.
-It is especially beneficial if you intend to pack the service into a Docker container:
-
-```
-alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > python3 -m venv venv
-alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > source ./venv/bin/activate
-(venv) alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > pip3 install flask requests
-```
-
-After you download all the packages:
-
-```
-alex@latitude7490:~/Projects/RESTing-with-Flask/02.rest/farm/ > pip3 freeze > requirements.txt
 ```
 
 ## Development Environment Setup - Visual Studio Code
