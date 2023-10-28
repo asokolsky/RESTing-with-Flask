@@ -133,7 +133,7 @@ class TestFarm(unittest.TestCase):
 
     def test_animals(self):
         '''
-        Verify functionality fo the animal collection
+        Verify functionality of the animal collection
         '''
 
         # any animals out there?

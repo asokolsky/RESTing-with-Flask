@@ -28,7 +28,7 @@ farm animal del all
 
 Let's start with the low level APIs that used to work for us in the past:
 
-```bash
+```console
 alex@latitude:~/Projects/RESTing-with-Flask/03.dataset-validation/farm$ ./farm -v post /api/v1/animal '{"name":"fluff"}'
 Serving static content from /home/alex/Projects/RESTing-with-Flask/03.dataset-validation/farm/static ...
 Loading config from farm.cfg ...
@@ -46,7 +46,7 @@ got back: {
 As you can see from teh above, we are getting data validation error along with
 explanation of what is expected.  Let's supply the requested data:
 
-```bash
+```console
 alex@latitude:~/Projects/RESTing-with-Flask/03.dataset-validation/farm$ ./farm -v post /api/v1/animal '{"name":"fluff", "sex":"female", "species":"chicken"}'
 Serving static content from /home/alex/Projects/RESTing-with-Flask/03.dataset-validation/farm/static ...
 Loading config from farm.cfg ...
@@ -75,7 +75,7 @@ got back: [
 
 Now to high level farm client functions:
 
-```bash
+```console
 alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal get c63226fb-1ae1-4d65-8c5c-c991dea4ae91
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -91,8 +91,7 @@ got back: {
 
 Check out data validation with higher level API:
 
-```bash
-
+```console
 alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal new '{"species":"chicken"}' -n 10
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -128,8 +127,7 @@ got back: {}
 
 Now let's try wildcard argument we introduced in this section:
 
-```bash
-
+```console
 alex@latitude:~/Projects/RESTing-with-Flask/03/farm$ ./farm animal del all
 Loading config from farm.cfg ...
 Logging level set to 10 DEBUG
@@ -229,8 +227,8 @@ got back: []
 
 We added tests in the app folder.  To launch all the tests:
 
-```bash
-alex@latitude:~/Projects/RESTing-with-Flask/03.dataset-validation/farm$ python3 -m unittest app/test_dataset.py  app/test_farm_schema.py 
+```console
+alex@latitude:~/Projects/RESTing-with-Flask/03.dataset-validation/farm$ python3 -m unittest app/test_dataset.py  app/test_farm_schema.py
 ..
 ----------------------------------------------------------------------
 Ran 2 tests in 0.001s
